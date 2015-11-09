@@ -64,12 +64,14 @@ CScreen::~CScreen()
 }
 
 
+const static float movementDelta = 0.2f;
+
 ScreenAction CScreen::getUserInput(Movement& movement)
 {
 //	bool isEvent = (SDL_PollEvent(&mEvent.event) != 0);
 //	if (isEvent) {
-	while (SDL_PollEvent(&mEvent.event)) {
-
+	while (SDL_PollEvent(&mEvent.event))
+	{
 		SDL_Event event = mEvent.event;
 
 		int x = event.motion.x;
@@ -88,9 +90,10 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 //			mEvent.mouseRightDown = false;
 //		}
 
-		std::cout << "Event: pixel (" << mEvent.x << ", " << mEvent.y << ")" << std::endl;
+//		std::cout << "Event: pixel (" << mEvent.x << ", " << mEvent.y << ")" << std::endl;
 
-		if (event.key.type == SDL_KEYDOWN && !keyDown)
+		//if (event.key.type == SDL_KEYDOWN && !keyDown)
+		if (event.key.type == SDL_KEYDOWN || event.key.type == SDL_KEYUP)
 		{
 			keyDown = true;
 
@@ -126,27 +129,27 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 				break;
 
 			case SDLK_w:
-				movement.y -= 1;
+				movement.yVelocity = -movementDelta;
 				break;
 
 			case SDLK_s:
-				movement.y += 1;
+				movement.yVelocity = movementDelta;
 				break;
 
 			case SDLK_a:
-				movement.x -= 1;
+				movement.xVelocity = -movementDelta;
 				break;
 
 			case SDLK_d:
-				movement.x += 1;
+				movement.xVelocity = movementDelta;
 				break;
 
 			case SDLK_q:
-				movement.fov -= 0.1f;
+				movement.fov -= movementDelta;
 				break;
 
 			case SDLK_e:
-				movement.fov += 0.1f;
+				movement.fov += movementDelta;
 				break;
 
 
@@ -155,18 +158,38 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 			}
 
 		}
-		else if (event.key.type == SDL_KEYUP && keyDown) {
+		
+		if (event.key.type == SDL_KEYUP)
+		{
 			keyDown = false;
 
+			switch (event.key.keysym.sym) {
+
+			case SDLK_w:
+			case SDLK_s:
+				movement.yVelocity = 0;
+				break;
+
+			case SDLK_a:
+			case SDLK_d:
+				movement.xVelocity = 0;
+				break;
+
+			default:
+				break;
+			}
 		}
-		else if (event.key.type == SDL_MOUSEMOTION && mEvent.mouseLeftDown) {
+
+		if (event.key.type == SDL_MOUSEMOTION && mEvent.mouseLeftDown)
+		{
 			std::cout << "Move: pixel (" << mEvent.x << ", " << mEvent.y << ")" << std::endl;
 
 			drawLine(uint2(mEvent.xOld, mEvent.yOld), uint2(mEvent.x, mEvent.y));
 			update();
 
 		}
-		else if (event.key.type == SDL_MOUSEBUTTONDOWN) {
+		else if (event.key.type == SDL_MOUSEBUTTONDOWN)
+		{
 			std::cout << "Click: pixel (" << mEvent.x << ", " << mEvent.x << ")" << std::endl;
 
 			mEvent.mouseLeftDown = (event.button.button == 1);
@@ -174,7 +197,8 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 			drawLine(uint2(mEvent.xOld, mEvent.yOld), uint2(mEvent.x, mEvent.y));
 			update();
 		}
-		else if (event.key.type == SDL_MOUSEBUTTONUP) {
+		else if (event.key.type == SDL_MOUSEBUTTONUP)
+		{
 			mEvent.mouseLeftDown = !(event.button.button == 1);
 			mEvent.mouseRightDown = !(event.button.button == 3);
 		}

@@ -1,7 +1,7 @@
 #pragma once
 
 struct Movement {
-	float x, y;
+	float xVelocity, yVelocity;
 	float pitch, yaw;
 	float fov;
 };

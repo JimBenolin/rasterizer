@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vertex.h"
+#include "matrix4x4.h"
 
 
 template<typename T> class triangle
@@ -22,6 +23,37 @@ public:
 public:
 	trianglec<T>(void) {}
 	trianglec<T>(vertexc<T> _vc0, vertexc<T> _vc1, vertexc<T> _vc2) : vc0(_vc0), vc1(_vc1), vc2(_vc2) {}
+
+	bool clip(void)
+	{
+		if (vc0.v.x < -1 || vc0.v.x > 1)
+			return true;
+		if (vc1.v.x < -1 || vc1.v.x > 1)
+			return true;
+		if (vc2.v.x < -1 || vc2.v.x > 1)
+			return true;
+		if (vc0.v.y < -1 || vc0.v.y > 1)
+			return true;
+		if (vc1.v.y < -1 || vc1.v.y > 1)
+			return true;
+		if (vc2.v.y < -1 || vc2.v.y > 1)
+			return true;
+//		if (vc0.v.z < -1 || vc0.v.z > 1)
+//			return true;
+//		if (vc1.v.z < -1 || vc1.v.z > 1)
+//			return true;
+//		if (vc2.v.z < -1 || vc2.v.z > 1)
+//			return true;
+
+		return false;
+	}
+
+	void transform(matrix4x4<T>& transform)
+	{
+		vc0.v = transform.transform(vc0.v);
+		vc1.v = transform.transform(vc1.v);
+		vc2.v = transform.transform(vc2.v);
+	}
 
 	void setup(vector3<T>& e0, vector3<T>& e1, vector3<T>& e2, T& doubleArea) const
 	{

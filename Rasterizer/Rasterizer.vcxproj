@@ -132,6 +132,7 @@
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="RenderBuffer.cpp" />
     <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoundingBox.h" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="RenderBuffer.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector2.h" />
     <ClInclude Include="vector3.h" />

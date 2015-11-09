@@ -1,8 +1,7 @@
 #pragma once
 
 #include "vector4.h"
-#include "vertex.h"
-#include "triangle.h"
+#include "matrix3x3.h"
 
 template<typename T> class matrix4x4
 {
@@ -153,9 +152,7 @@ public:
 	vector4<T> operator*(const vector4<T>& v) const { return vector4<T>(getRow(0).dot(v), getRow(1).dot(v), getRow(2).dot(v), getRow(3).dot(v)); }
 	vector4<T> operator*(const vector3<T>& v) const { return vector3<T>(getRow(0).xyz().dot(v), getRow(1).xyz().dot(v), getRow(2).xyz().dot(v)); }
 	vector4<T> transform(const vector4<T>& v) const { return *this * v; }
-	vector4<T> transform(const vertex<T>& v) const { vector4<T> tr = *this * vector4<T>(v); if (tr.w != T(0)) tr /= tr.w; return tr; }
-//	triangle<T> transform(const triangle<T>& t) const { triangle<T> result; result.v0 = this->transform(t.v0); result.v1 = this->transform(t.v1); result.v2 = this->transform(t.v2); return result; }
-//	trianglen<T> transform(const trianglen<T>& t) const { trianglen<T> result; result.v = this->transform(t.v); result.n = this->transform(t.n); return result; }
+//	vector4<T> transform(const vertex<T>& v) const { vector4<T> tr = *this * vector4<T>(v); if (tr.w != T(0)) tr /= tr.w; return tr; }
 	vector3<T> transform(const vector3<T>& v) const { vector4<T> tr = *this * vector4<T>(v, T(1)); if (tr.w != T(0)) tr /= tr.w; return tr.xyz(); }
 	void transform(const vector4<T>& v, vector4<T>& dst) const { dst = transform(v); }
 	void transform(const vector3<T>& v, vector3<T>& dst) const { dst = transform(v); }
