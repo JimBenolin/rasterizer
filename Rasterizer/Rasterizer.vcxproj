@@ -128,17 +128,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DepthBuffer.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
+    <ClCompile Include="RenderBuffer.cpp" />
     <ClCompile Include="Screen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="DepthBuffer.h" />
     <ClInclude Include="JimMath.h" />
     <ClInclude Include="matrix2x2.h" />
     <ClInclude Include="matrix3x3.h" />
     <ClInclude Include="matrix4x4.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Rasterizer.h" />
+    <ClInclude Include="RenderBuffer.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector2.h" />

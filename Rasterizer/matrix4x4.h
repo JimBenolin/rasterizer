@@ -115,7 +115,7 @@ public:
 		T ar = width / height;
 		T tanHalfFov = tan(fov / T(2));
 		T zRange = zNear - zFar;
-		*this = matrix4x4(T(1) / (tanHalfFov * ar), 0, 0, 0,
+		*this = matrix4x4(-T(1) / (tanHalfFov * ar), 0, 0, 0,
 			0, T(1) / tanHalfFov, 0, 0,
 			0, 0, -(zNear + zFar) / zRange, T(2) * zFar * zNear / zRange,
 			0, 0, T(1), 0);

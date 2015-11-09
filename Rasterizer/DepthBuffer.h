@@ -18,17 +18,19 @@ enum DepthTest {
 class CDepthBuffer
 {
 private:
-	int mWidth, mHeight;
+	int mWidth, mHeight, mSamples;
 	DepthTest mDepthTest;
 	float* mvBuffer;
+private:
+	inline size_t sampleAddress(int x, int y, int s) { return (y * mWidth + x) * mSamples + s; }
 public:
-	CDepthBuffer(int width, int height, DepthTest depthTest = DEPTH_TEST_ALWAYS);
+	CDepthBuffer(int width, int height, int samples, DepthTest depthTest = DEPTH_TEST_GTE);
 	~CDepthBuffer();
 
 	void clear(void);
 	inline void setDepthTest(DepthTest depthTest) { mDepthTest = depthTest; }
 
-	bool test(int x, int y, float value);
-	inline void set(int x, int y, float value) { if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) mvBuffer[y * mWidth + x] = value; }
+	bool test(int x, int y, int s, float value);
+	inline void set(int x, int y, int s, float value) { if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) mvBuffer[sampleAddress(x, y, s)] = value; }
 };
 

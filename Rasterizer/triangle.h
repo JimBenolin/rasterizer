@@ -15,6 +15,7 @@ public:
 
 
 template<typename T> class trianglec
+	: public triangle<T>
 {
 public:
 	vertexc<T> vc0, vc1, vc2;
@@ -24,9 +25,9 @@ public:
 
 	void setup(vector3<T>& e0, vector3<T>& e1, vector3<T>& e2, T& doubleArea) const
 	{
-		e0 = edge(vc0.v, vc1.v);
-		e1 = edge(vc1.v, vc2.v);
-		e2 = edge(vc2.v, vc0.v);
+		e0 = edge(vc1.v, vc0.v);
+		e1 = edge(vc2.v, vc1.v);
+		e2 = edge(vc0.v, vc2.v);
 		doubleArea = e0.z + e1.z + e2.z;
 	}
 };

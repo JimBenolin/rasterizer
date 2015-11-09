@@ -1,8 +1,8 @@
 #include "Screen.h"
 
 
-CScreen::CScreen(std::string name, int width, int height)
-	: mName(name), mWidth(width), mHeight(height)
+CScreen::CScreen(std::string name, int width, int height, int samples)
+	: mName(name), mWidth(width), mHeight(height), mSamples(samples)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -28,7 +28,25 @@ CScreen::CScreen(std::string name, int width, int height)
 				exit(-1);
 			}
 
-			mpDepthBuffer = new CDepthBuffer(width, height);
+			mpDepthBuffer = new CDepthBuffer(mWidth, mHeight, mSamples);
+
+			if (mSamples == 1)
+				mSamplePositions = SamplePositions1;
+			else if (mSamples == 4)
+			{
+				mSamplePositions = SamplePositions4;
+				mpRenderBuffer = new CRenderBuffer(mWidth, mHeight, mSamples);
+			}
+			else if (mSamples == 8)
+			{
+				mSamplePositions = SamplePositions8;
+				mpRenderBuffer = new CRenderBuffer(mWidth, mHeight, mSamples);
+			}
+			else if (mSamples == 16)
+			{
+				mSamplePositions = SamplePositions16;
+				mpRenderBuffer = new CRenderBuffer(mWidth, mHeight, mSamples);
+			}
 
 			mColor = { 0x00, 0x00, 0x00, 0xff };
 			mClearColor = { 0xff, 0xff, 0xff, 0x00 };
@@ -222,48 +240,80 @@ void CScreen::rasterize(const floattc& tc)
 	float ev, A, B;
 	float3 barycentric;
 
-	float ev0 = e0.dot(float3(0.5f, 0.5f, 1));
-	float ev1 = e1.dot(float3(0.5f, 0.5f, 1));
-	float ev2 = e2.dot(float3(0.5f, 0.5f, 1));
-
-
-	floatbb bb(floatt(tc.vc0.v, tc.vc1.v, tc.vc2.v));
-
-	for (int y = int(bb.y0); y < int(bb.y1) + 1; y++)
+	for (int s = 0; s < mSamples; s++)
 	{
-		for (int x = int(bb.x0); x < int(bb.x1) + 1; x++)
+
+		float ev0 = e0.dot(float3(mSamplePositions[s].x, mSamplePositions[s].y, 1));
+		float ev1 = e1.dot(float3(mSamplePositions[s].x, mSamplePositions[s].y, 1));
+		float ev2 = e2.dot(float3(mSamplePositions[s].x, mSamplePositions[s].y, 1));
+
+
+		floatbb bb(floatt(tc.vc0.v, tc.vc1.v, tc.vc2.v));
+
+		for (int y = int(bb.y0); y < int(bb.y1) + 1; y++)
 		{
-			A = e0.x;
-			B = e0.y;
-			t = (A != 0 ? A > 0 : B > 0);
-			ev = ev0 + A * x + B * y;
-			if (!(ev > 0 || (ev == 0 && t)))
-				continue;
-			barycentric.u = ev / doubleArea;
-
-			A = e1.x;
-			B = e1.y;
-			t = (A != 0 ? A > 0 : B > 0);
-			ev = ev1 + A * x + B * y;
-			if (!(ev > 0 || (ev == 0 && t)))
-				continue;
-			barycentric.v = ev / doubleArea;
-
-			A = e2.x;
-			B = e2.y;
-			t = (A != 0 ? A > 0 : B > 0);
-			ev = ev2 + A * x + B * y;
-			if (!(ev > 0 || (ev == 0 && t)))
-				continue;
-			barycentric.w = 1 - barycentric.u - barycentric.v;
-
-			float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(barycentric);
-			if (mpDepthBuffer->test(x, y, z))
+			for (int x = int(bb.x0); x < int(bb.x1) + 1; x++)
 			{
-				setColor(barycentric.v * c[0] + barycentric.w * c[1] + barycentric.u * c[2]);
-				drawPixel(uint2(x, y));
-				mpDepthBuffer->set(x, y, z);
+				A = e0.x;
+				B = e0.y;
+				t = (A != 0 ? A > 0 : B > 0);
+				ev = ev0 + A * x + B * y;
+				if (!(ev > 0 || (ev == 0 && t)))
+					continue;
+				barycentric.u = ev / doubleArea;
+
+				A = e1.x;
+				B = e1.y;
+				t = (A != 0 ? A > 0 : B > 0);
+				ev = ev1 + A * x + B * y;
+				if (!(ev > 0 || (ev == 0 && t)))
+					continue;
+				barycentric.v = ev / doubleArea;
+
+				A = e2.x;
+				B = e2.y;
+				t = (A != 0 ? A > 0 : B > 0);
+				ev = ev2 + A * x + B * y;
+				if (!(ev > 0 || (ev == 0 && t)))
+					continue;
+				barycentric.w = 1 - barycentric.u - barycentric.v;
+
+				float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(float3(barycentric.v, barycentric.w, barycentric.u));
+				if (mpDepthBuffer->test(x, y, s, z))
+				{
+					setColor(barycentric.v * c[0] + barycentric.w * c[1] + barycentric.u * c[2]);
+					if (mSamples > 1)
+					{
+						mpRenderBuffer->set(x, y, s, mColor);
+					}
+					else
+					{
+						drawPixel(uint2(x, y));
+					}
+					mpDepthBuffer->set(x, y, s, z);
+				}
 			}
 		}
 	}
+
+}
+
+
+void CScreen::resolve(void)
+{
+		for (int y = 0; y < mHeight; y++)
+		{
+			for (int x = 0; x < mWidth; x++)
+			{
+				ubyte4 color = { 0, 0, 0, 0 };
+				uint4 totalColor = { 0, 0, 0, 0 };
+				for (int s = 0; s < mSamples; s++)
+				{
+					color = mpRenderBuffer->get(x, y, s);
+					totalColor += uint4(color.r, color.g, color.b, color.a);
+				}
+				setColor(ubyte4(uint8_t(totalColor.r / mSamples), uint8_t(totalColor.g / mSamples), uint8_t(totalColor.b / mSamples), uint8_t(totalColor.a / mSamples)));
+				drawPixel(uint2(x, y));
+			}
+		}
 }

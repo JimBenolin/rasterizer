@@ -1,10 +1,10 @@
 #include "DepthBuffer.h"
 
 
-CDepthBuffer::CDepthBuffer(int width, int height, DepthTest depthTest)
-	: mWidth(width), mHeight(height), mDepthTest(depthTest)
+CDepthBuffer::CDepthBuffer(int width, int height, int samples, DepthTest depthTest)
+	: mWidth(width), mHeight(height), mSamples(samples), mDepthTest(depthTest)
 {
-	mvBuffer = (float*)calloc(width * height, sizeof(float));
+	mvBuffer = (float*)calloc(mWidth * mHeight * mSamples, sizeof(float));
 }
 
 
@@ -32,17 +32,17 @@ void CDepthBuffer::clear(void)
 		value = -std::numeric_limits<float>::infinity();
 		break;
 	}
-	memset(mvBuffer, int(value), mWidth * mHeight * sizeof(float));
+	memset(mvBuffer, int(value), mWidth * mHeight * mSamples * sizeof(float));
 }
 
 
-bool CDepthBuffer::test(int x, int y, float value)
+bool CDepthBuffer::test(int x, int y, int s, float value)
 {
 	if (x < 0 || x >= mWidth || y < 0 || y >= mHeight)
 		return false;
 		
 	bool result = false;
-	float currentValue = mvBuffer[y * mWidth + x];
+	float currentValue = mvBuffer[sampleAddress(x, y, s)];
 	
 	switch (mDepthTest)
 	{

@@ -85,3 +85,4 @@ public:
 typedef vector4<float> float4;
 typedef vector4<double> double4;
 typedef vector4<uint8_t> ubyte4;
+typedef vector4<uint16_t> uint4;
