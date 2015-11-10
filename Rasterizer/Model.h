@@ -25,6 +25,6 @@ public:
 	void addAxes(void);
 	void addCubeRGB(float3 center, float3 side);
 	void add(std::vector<floattc>& model);
-	void addCheckerBoard(void);
+	void addCheckerBoard(int dimension = 10, float width = 1.0f);
 };
 

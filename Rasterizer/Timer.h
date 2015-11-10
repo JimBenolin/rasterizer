@@ -21,5 +21,6 @@ public:
 		mElapsedMicroseconds.QuadPart /= mFrequency.QuadPart;
 		return mElapsedMicroseconds.QuadPart;
 	}
+	inline size_t getAndSet(void) { size_t timer = get(); set(); return timer; }
 };
 

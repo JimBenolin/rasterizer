@@ -4,6 +4,7 @@
 CTimer::CTimer()
 {
 	QueryPerformanceFrequency(&mFrequency);
+	set();
 }
 
 

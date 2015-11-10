@@ -64,12 +64,10 @@ CScreen::~CScreen()
 }
 
 
-const static float movementDelta = 0.2f;
+const static float movementVelocity = 5.0f;
 
 ScreenAction CScreen::getUserInput(Movement& movement)
 {
-//	bool isEvent = (SDL_PollEvent(&mEvent.event) != 0);
-//	if (isEvent) {
 	while (SDL_PollEvent(&mEvent.event))
 	{
 		SDL_Event event = mEvent.event;
@@ -77,22 +75,11 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 		int x = event.motion.x;
 		int y = event.motion.y;
 
-//		if (x >= 0 && x < mWidth && y >= 0 && y < mHeight)
-//		{
-			mEvent.xOld = mEvent.x;
-			mEvent.yOld = mEvent.y;
-			mEvent.x = x;
-			mEvent.y = y;
-//		}
-//		else
-//		{
-//			mEvent.mouseLeftDown = false;
-//			mEvent.mouseRightDown = false;
-//		}
+		mEvent.xOld = mEvent.x;
+		mEvent.yOld = mEvent.y;
+		mEvent.x = x;
+		mEvent.y = y;
 
-//		std::cout << "Event: pixel (" << mEvent.x << ", " << mEvent.y << ")" << std::endl;
-
-		//if (event.key.type == SDL_KEYDOWN && !keyDown)
 		if (event.key.type == SDL_KEYDOWN || event.key.type == SDL_KEYUP)
 		{
 			keyDown = true;
@@ -104,8 +91,9 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 				break;
 
 			case SDLK_SPACE:
+				return SCREEN_ACTION_PAUSE;
 				isPaused = (isPaused ? false : true);
-				singleStep = isPaused;
+//				singleStep = isPaused;
 				break;
 
 			case SDLK_u:
@@ -129,27 +117,27 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 				break;
 
 			case SDLK_w:
-				movement.yVelocity = -movementDelta;
+				movement.yVelocity = -movementVelocity;
 				break;
 
 			case SDLK_s:
-				movement.yVelocity = movementDelta;
+				movement.yVelocity = movementVelocity;
 				break;
 
 			case SDLK_a:
-				movement.xVelocity = -movementDelta;
+				movement.xVelocity = -movementVelocity;
 				break;
 
 			case SDLK_d:
-				movement.xVelocity = movementDelta;
+				movement.xVelocity = movementVelocity;
 				break;
 
 			case SDLK_q:
-				movement.fov -= movementDelta;
+				movement.fov -= movementVelocity;
 				break;
 
 			case SDLK_e:
-				movement.fov += movementDelta;
+				movement.fov += movementVelocity;
 				break;
 
 
@@ -184,9 +172,10 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 		{
 			std::cout << "Move: pixel (" << mEvent.x << ", " << mEvent.y << ")" << std::endl;
 
-			drawLine(uint2(mEvent.xOld, mEvent.yOld), uint2(mEvent.x, mEvent.y));
-			update();
-
+			movement.pitch += (mEvent.yOld - mEvent.y) * 0.01f;
+			movement.pitch = std::min(float(M_PI) / 8, std::max(-float(M_PI) / 8, movement.pitch));
+			movement.yaw += (mEvent.xOld - mEvent.x) * 0.01f;
+			movement.yaw = std::min(float(M_PI) / 8, std::max(-float(M_PI) / 8, movement.yaw));
 		}
 		else if (event.key.type == SDL_MOUSEBUTTONDOWN)
 		{

@@ -12,6 +12,7 @@
 
 enum ScreenAction {
 	SCREEN_ACTION_NONE,
+	SCREEN_ACTION_PAUSE,
 	SCREEN_ACTION_QUIT,
 };
 

@@ -94,10 +94,8 @@ const floattn plane[] = {
 };
 
 
-void CModel::addCheckerBoard(void)
+void CModel::addCheckerBoard(int dimension, float width)
 {
-	int dimension = 10;
-	float width = 1.0f;
 	float middleOffset = (float(dimension) - 1.0f) * width / 2.0f;
 
 	float halfWidth = width / 2.0f;
