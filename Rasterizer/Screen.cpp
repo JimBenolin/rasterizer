@@ -75,10 +75,13 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 		int x = event.motion.x;
 		int y = event.motion.y;
 
+
 		mEvent.xOld = mEvent.x;
 		mEvent.yOld = mEvent.y;
 		mEvent.x = x;
 		mEvent.y = y;
+
+		std::cout << "(" << mEvent.x << ", " << mEvent.x << ")" << std::endl;
 
 		if (event.key.type == SDL_KEYDOWN || event.key.type == SDL_KEYUP)
 		{
@@ -168,14 +171,15 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 			}
 		}
 
-		if (event.key.type == SDL_MOUSEMOTION && mEvent.mouseLeftDown)
+//		if (event.key.type == SDL_MOUSEMOTION && mEvent.mouseLeftDown)
+		if (event.key.type == SDL_MOUSEMOTION)
 		{
-			std::cout << "Move: pixel (" << mEvent.x << ", " << mEvent.y << ")" << std::endl;
 
-			movement.pitch += (mEvent.yOld - mEvent.y) * 0.01f;
-			movement.pitch = std::min(float(M_PI) / 8, std::max(-float(M_PI) / 8, movement.pitch));
-			movement.yaw += (mEvent.xOld - mEvent.x) * 0.01f;
-			movement.yaw = std::min(float(M_PI) / 8, std::max(-float(M_PI) / 8, movement.yaw));
+			movement.pitch = (mHeight / 2 - mEvent.y) * 0.005f;
+			movement.pitch = std::min(float(M_PI), std::max(-float(M_PI), movement.pitch));
+
+			movement.yaw = (mWidth / 2 - mEvent.x) * 0.005f;
+//			movement.yaw = std::min(float(M_PI), std::max(-float(M_PI), movement.yaw));
 		}
 		else if (event.key.type == SDL_MOUSEBUTTONDOWN)
 		{
@@ -183,8 +187,8 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 
 			mEvent.mouseLeftDown = (event.button.button == 1);
 			mEvent.mouseRightDown = (event.button.button == 3);
-			drawLine(uint2(mEvent.xOld, mEvent.yOld), uint2(mEvent.x, mEvent.y));
-			update();
+//			drawLine(uint2(mEvent.xOld, mEvent.yOld), uint2(mEvent.x, mEvent.y));
+//			update();
 		}
 		else if (event.key.type == SDL_MOUSEBUTTONUP)
 		{
@@ -294,7 +298,16 @@ void CScreen::rasterize(const floattc& tc)
 				float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(float3(barycentric.v, barycentric.w, barycentric.u));
 				if (mpDepthBuffer->test(x, y, s, z))
 				{
+#if 0
 					setColor(barycentric.v * c[0] + barycentric.w * c[1] + barycentric.u * c[2]);
+#else
+					if (z < -1)
+						setColor(float4(1, 0, 0, 0));
+					else if (z > 1)
+						setColor(float4(0, 1, 0, 0));
+					else
+						setColor(float4((z + 1) / 2, (z + 1) / 2, (z + 1) / 2, (z + 1) / 2));
+#endif
 					if (mSamples > 1)
 					{
 						mpRenderBuffer->set(x, y, s, mColor);

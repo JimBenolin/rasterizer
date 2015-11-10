@@ -93,8 +93,8 @@ public:
 		matrix4x4<T> orientation(vector4<T>(xaxis, 0), vector4<T>(yaxis, 0), vector4<T>(zaxis, 0), vector4<T>(0, 0, 0, 1));
 
 	}
-#if 0
-	void setProjectionPerspective(T n, T f, T t, T b, T l, T r)
+
+	void setProjectionPerspectiveB(T n, T f, T t, T b, T l, T r)
 	{
 		T nn = 2 * n;
 		T rml = r - l;
@@ -108,7 +108,17 @@ public:
 			0, 0, fpn / fmn, T(-2) * f * n / fmn,
 			0, 0, T(1), 0);
 	}
-#endif
+
+	void setProjectionPerspectiveNW(T fov, T width, T height, T zNear, T zFar)
+	{
+		T ar = width / height;
+		T tanHalfFov = tan(fov / T(2));
+		T zRange = zNear - zFar;
+		*this = matrix4x4(T(1) / (tanHalfFov * ar), 0, 0, 0,
+			0, T(1) / tanHalfFov, 0, 0,
+			0, 0, (zNear - zFar) / (zNear + zFar), T(2) * zFar * zNear / (zNear + zFar),
+			0, 0, T(1), 0);
+	}
 	void setProjectionPerspective(T fov, T width, T height, T zNear, T zFar)
 	{
 		T ar = width / height;
@@ -177,7 +187,7 @@ public:
 	static matrix4x4<T> rotateAxisZ(T a) { matrix4x4<T> result; result.setRotateAxisZ(a); return result; }
 	static matrix4x4<T> cameraLookAtRH(const vector3<T>& eye, const vector3<T>& target, const vector3<T>& up) { matrix4x4<T> result; result.setCameraLookAtRH(eye, target, up); return result; }
 	static matrix4x4<T> cameraFirstPersonRH(const vector3<T>& eye, T pitch, T yaw) { matrix4x4<T> result; result.setCameraFirstPersonRH(eye, pitch, yaw); return result; }
-	static matrix4x4<T> projectionPerspective(T n, T f, T t, T b, T l, T r) { matrix4x4<T> result; result.setProjectionPerspective(n, f, t, b, l, r); return result; }
+	static matrix4x4<T> projectionPerspectiveB(T n, T f, T t, T b, T l, T r) { matrix4x4<T> result; result.setProjectionPerspectiveB(n, f, t, b, l, r); return result; }
 	static matrix4x4<T> projectionPerspective(T fov, T width, T height, T zNear, T zFar) { matrix4x4<T> result; result.setProjectionPerspective(fov, width, height, zNear, zFar); return result; }
 };
 

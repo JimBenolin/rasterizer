@@ -11,6 +11,13 @@ CModel::~CModel()
 }
 
 
+void CModel::addSingle(void)
+{
+	mvModel.push_back({ { { 0, 0, -1 }, red }, { { -1, 0, 1 }, green }, { { 1, 0, 1 }, blue } });
+	addAxes();
+}
+
+
 void CModel::addAxes(void)
 {
 	//  x
@@ -31,7 +38,6 @@ void CModel::addAxes(void)
 	mvModel.push_back({ { { 0.1f, -0.1f, 1.1f }, blue }, { { 0.1f, 0.1f, 1.1f }, blue }, { { 0.0f, 0.0f, 2.0f }, black } });
 	mvModel.push_back({ { { -0.1f, -0.1f, 1.1f }, blue }, { { 0.1f, -0.1f, 1.1f }, blue }, { { 0.0f, 0.0f, 2.0f }, black } });
 }
-
 
 
 void CModel::addCubeRGB(float3 center, float3 side)

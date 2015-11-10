@@ -79,7 +79,7 @@ public:
 	vector2<T> operator*(const vector2<T>& v) const { return vector2<T>(getColumn(0).dot(v), getColumn(1).dot(v)); }
 	vector2<T> transform(const vector2<T>& v) const { return *this * v; }
 	void transform(const vector2<T>& v, vector2<T>& dst) const { dst = transform(v); }
-	friend vector2<T> operator*(const vector2<T> &v, const matrix2x2<T>& M) { M.transform(v); }
+	friend vector2<T> operator*(const vector2<T> &v, const matrix2x2<T>& M) { return M.transform(v); }
 
 	//  debug
 	friend std::ostream& operator<<(std::ostream& os, const matrix2x2<T>& m) { os << "[ " << m[0] << ", " << m[1] << " ]"; return os; }
@@ -88,9 +88,10 @@ public:
 	//  statics
 	static matrix2x2<T> zero(void) { matrix2x2<T> result; result.setZero(); return result; }
 	static matrix2x2<T> identity(void) { matrix2x2<T> result; result.setIdentity(); return result; }
-	static matrix2x2<T> scale(T s) { matrix2x2<T> result; result.setScale(s); return result; }
-	static matrix2x2<T> scale(T sx, T sy) { matrix2x2<T> result; result.setScale(sx, sy); return result; }
+	static matrix2x2<T> scale(const T s) { matrix2x2<T> result; result.setScale(s); return result; }
+	static matrix2x2<T> scale(const T sx, const T sy) { matrix2x2<T> result; result.setScale(sx, sy); return result; }
 	static matrix2x2<T> scale(const vector2<T>& s) { matrix2x2<T> result; result.setScale(s); return result; }
+	static matrix2x2<T> rotation(const T a) { matrix2x2<T> result; result.setRotate(a); return result; }
 };
 
 typedef matrix2x2<float> float2x2;
