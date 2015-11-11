@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <limits>
+#include <algorithm>
 
 
 enum DepthTest {
@@ -24,7 +25,7 @@ private:
 private:
 	inline size_t sampleAddress(int x, int y, int s) { return (y * mWidth + x) * mSamples + s; }
 public:
-	CDepthBuffer(int width, int height, int samples, DepthTest depthTest = DEPTH_TEST_GTE);
+	CDepthBuffer(int width, int height, int samples, DepthTest depthTest = DEPTH_TEST_LT);
 	~CDepthBuffer();
 
 	void clear(void);

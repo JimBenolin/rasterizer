@@ -4,15 +4,24 @@
 CScreen::CScreen(std::string name, int width, int height, int samples)
 	: mName(name), mWidth(width), mHeight(height), mSamples(samples)
 {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		std::cout << "[SDL]  Could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-		exit(-1);
-	}
-	else
+	bWireframe = false;
+//	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+//	{
+//		std::cout << "[SDL]  Could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+//		exit(-1);
+//	}
+//	else
 	{
 		//Create window
+#if 1
+//		SDL_Rect r;
+//		SDL_GetDisplayBounds(0, &r);
+//		mWidth = r.w;
+//		mHeight = r.h;
+		mpWindow = SDL_CreateWindow(mName.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_FULLSCREEN_DESKTOP);
+#else
 		mpWindow = SDL_CreateWindow(mName.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_SHOWN);
+#endif
 		if (mpWindow == NULL)
 		{
 			std::cout << "[SDL]  Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
@@ -57,8 +66,15 @@ CScreen::CScreen(std::string name, int width, int height, int samples)
 }
 
 
+void init()
+{
+
+}
+
+
 CScreen::~CScreen()
 {
+	SDL_SetWindowFullscreen(mpWindow, NULL);
 	SDL_DestroyWindow(mpWindow);
 	SDL_Quit();
 }
@@ -103,11 +119,11 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 				update();
 				break;
 
-			case SDLK_f:
-				isPaused = true;
-				singleStep = true;
-				update();
-				break;
+//			case SDLK_f:
+//				isPaused = true;
+//				singleStep = true;
+//				update();
+//				break;
 
 			case SDLK_KP_PLUS:
 			case SDLK_PLUS:
@@ -136,13 +152,12 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 				break;
 
 			case SDLK_q:
-				movement.fov -= movementVelocity;
+				movement.fov -= 0.01f;
 				break;
 
 			case SDLK_e:
-				movement.fov += movementVelocity;
+				movement.fov += 0.01f;
 				break;
-
 
 			default:
 				break;
@@ -164,6 +179,10 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 			case SDLK_a:
 			case SDLK_d:
 				movement.xVelocity = 0;
+				break;
+
+			case SDLK_f:
+				bWireframe = !bWireframe;
 				break;
 
 			default:
@@ -253,6 +272,29 @@ void CScreen::rasterize(const floattc& tc)
 		return;
 	}
 
+	if (bWireframe)
+	{
+		//  triangle is back-facing or zero-area
+		float3 v[3] = { tc.vc0.v, tc.vc1.v, tc.vc2.v };
+		if (v[0].x < 0 || v[0].x >= mWidth)
+			return;
+		if (v[1].x < 0 || v[1].x >= mWidth)
+			return;
+		if (v[2].x < 0 || v[2].x >= mWidth)
+			return;
+		if (v[0].y < 0 || v[0].y >= mHeight)
+			return;
+		if (v[1].y < 0 || v[1].y >= mHeight)
+			return;
+		if (v[2].y < 0 || v[2].y >= mHeight)
+			return;
+		setColor(ubyte4(0, 0, 0, 0));
+		drawLine(uint16_t(v[0].x), uint16_t(v[0].y), uint16_t(v[1].x), uint16_t(v[1].y));
+		drawLine(uint16_t(v[1].x), uint16_t(v[1].y), uint16_t(v[2].x), uint16_t(v[2].y));
+		drawLine(uint16_t(v[2].x), uint16_t(v[2].y), uint16_t(v[0].x), uint16_t(v[0].y));
+		return;
+	}
+
 	bool t;
 	float ev, A, B;
 	float3 barycentric;
@@ -295,10 +337,10 @@ void CScreen::rasterize(const floattc& tc)
 					continue;
 				barycentric.w = 1 - barycentric.u - barycentric.v;
 
-				float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(float3(barycentric.v, barycentric.w, barycentric.u));
+				float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(float3(barycentric.w, barycentric.v, barycentric.u));
 				if (mpDepthBuffer->test(x, y, s, z))
 				{
-#if 0
+#if 1
 					setColor(barycentric.v * c[0] + barycentric.w * c[1] + barycentric.u * c[2]);
 #else
 					if (z < -1)
@@ -306,7 +348,7 @@ void CScreen::rasterize(const floattc& tc)
 					else if (z > 1)
 						setColor(float4(0, 1, 0, 0));
 					else
-						setColor(float4((z + 1) / 2, (z + 1) / 2, (z + 1) / 2, (z + 1) / 2));
+						setColor(float4((z + 1) / 2, (z + 1) / 2, (z + 1) / 2, (z + 1) / 2) / 2.0f);
 #endif
 					if (mSamples > 1)
 					{

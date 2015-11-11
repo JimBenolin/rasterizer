@@ -13,9 +13,6 @@
 int width = 500;
 int height = 500;
 
-float4x4 screenScaleT = float4x4::scale(float(width), float(height), 1.0f);
-float4x4 screenTranslationT = float4x4::translation(float(width) / 2, float(height) / 2, 0);
-float4x4 screenTransformT = screenTranslationT * screenScaleT;
 
 static float rotationVelocity = float((2 * M_PI) / 40);
 static float rotationAngle = 0.0f;
@@ -23,7 +20,24 @@ static float rotationAngle = 0.0f;
 
 int main(int argc, char* argv[])
 {
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		std::cout << "[SDL]  Could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+		exit(-1);
+	}
+
+	int numDisplays = SDL_GetNumVideoDisplays();
+	SDL_Rect r;
+	SDL_GetDisplayBounds(0, &r);
+
+	width = r.w;
+	height = r.h;
 	CScreen screen("Test", width, height, 1);
+
+
+	float4x4 screenScaleT = float4x4::scale(float(width), float(height), 1.0f);
+	float4x4 screenTranslationT = float4x4::translation(float(width) / 2, float(height) / 2, 0);
+	float4x4 screenTransformT = screenTranslationT * screenScaleT;
 
 	screen.setClearColor(ubyte4(230, 230, 255, 255));
 	screen.clear();
@@ -49,12 +63,13 @@ int main(int argc, char* argv[])
 	{
 		screen.clear();
 
-		viewT = float4x4::cameraFirstPersonRH(float3(position.x, 3.14159f * 0.5f, position.y), movement.pitch, movement.yaw);
+		viewT = float4x4::cameraFirstPersonRH(float3(position.x, float(M_PI / 3), position.y), movement.pitch, movement.yaw);
 //		viewT = float4x4::cameraLookAtRH(float3(position.x, 3.14159f * 0.5f, position.y), float3(0, 0, 0), float3(0, 1, 0));
-		projectionT = float4x4::projectionPerspective(movement.fov, float(width), float(height), 0.1f, 10000.0f);
+		projectionT = float4x4::projectionPerspective(movement.fov, float(width), float(height), -0.01f, -50.0f);
 //		projectionT = float4x4::projectionPerspectiveB(0.1f, 1000, 5, -5, -5, 5);
 
-		modelT = float4x4::translation(0, 0, -1);
+#if 0
+		modelT = float4x4::translation(0, 0, -3);
 		mvpT = projectionT * viewT * modelT;
 		for (auto triangle : singleTriangle.getTriangles())
 		{
@@ -68,9 +83,9 @@ int main(int argc, char* argv[])
 
 			screen.rasterize(triangleT);
 		}
-
-#if 0
-		modelT = float4x4::translation(0, 1, -1) * float4x4::rotateAxisY(-rotationAngle);
+#endif
+#if 1
+		modelT = float4x4::translation(0, 1, -4) * float4x4::rotateAxisY(-rotationAngle);
 		mvpT = projectionT * viewT * modelT;
 		for (auto triangle : model.getTriangles())
 		{

@@ -26,24 +26,25 @@ public:
 
 	bool clip(void)
 	{
-		if (vc0.v.x < -1 || vc0.v.x > 1)
+		float clipDistance = 1.2f;
+		if (vc0.v.x < -clipDistance || vc0.v.x > clipDistance)
 			return true;
-		if (vc1.v.x < -1 || vc1.v.x > 1)
+		if (vc1.v.x < -clipDistance || vc1.v.x > clipDistance)
 			return true;
-		if (vc2.v.x < -1 || vc2.v.x > 1)
+		if (vc2.v.x < -clipDistance || vc2.v.x > clipDistance)
 			return true;
-		if (vc0.v.y < -1 || vc0.v.y > 1)
+		if (vc0.v.y < -clipDistance || vc0.v.y > clipDistance)
 			return true;
-		if (vc1.v.y < -1 || vc1.v.y > 1)
+		if (vc1.v.y < -clipDistance || vc1.v.y > clipDistance)
 			return true;
-		if (vc2.v.y < -1 || vc2.v.y > 1)
+		if (vc2.v.y < -clipDistance || vc2.v.y > clipDistance)
 			return true;
-//		if (vc0.v.z < -1 || vc0.v.z > 1)
-//			return true;
-//		if (vc1.v.z < -1 || vc1.v.z > 1)
-//			return true;
-//		if (vc2.v.z < -1 || vc2.v.z > 1)
-//			return true;
+		if (vc0.v.z < -clipDistance || vc0.v.z > clipDistance)
+			return true;
+		if (vc1.v.z < -clipDistance || vc1.v.z > clipDistance)
+			return true;
+		if (vc2.v.z < -clipDistance || vc2.v.z > clipDistance)
+			return true;
 
 		return false;
 	}

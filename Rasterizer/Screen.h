@@ -85,6 +85,7 @@ private:
 	bool isPaused;
 	bool singleStep;
 	bool keyDown;
+	bool bWireframe;
 
 private:
 	inline void setRenderDrawColor(const ubyte4& color) { SDL_SetRenderDrawColor(mpRenderer, mClearColor.r, mClearColor.g, mClearColor.b, mClearColor.a); }
@@ -92,6 +93,7 @@ public:
 	CScreen(std::string name, int width, int height, int samples = 1);
 	~CScreen();
 
+	static inline void getDesktopSize(SDL_Rect& rect) { SDL_GetDisplayBounds(0, &rect); }
 	inline int getWidth(void) const { return mWidth; }
 	inline int getHeight(void) const { return mHeight; }
 	inline void setColor(const ubyte4& color) { mColor = color; mColor.clamp(0, 255); }

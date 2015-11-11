@@ -19,8 +19,8 @@ void CDepthBuffer::clear(void)
 	switch (mDepthTest)
 	{
 	case DEPTH_TEST_LT:
-		break;
 	case DEPTH_TEST_LTE:
+		value = std::numeric_limits<float>::infinity();
 		break;
 	case DEPTH_TEST_EQ:
 		break;
@@ -32,7 +32,8 @@ void CDepthBuffer::clear(void)
 		value = -std::numeric_limits<float>::infinity();
 		break;
 	}
-	memset(mvBuffer, int(value), mWidth * mHeight * mSamples * sizeof(float));
+	std::fill(mvBuffer, mvBuffer + mWidth * mHeight * mSamples, value);
+	//memset(mvBuffer, int(value), mWidth * mHeight * mSamples * sizeof(float));
 }
 
 
