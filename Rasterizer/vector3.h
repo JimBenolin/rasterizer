@@ -70,10 +70,10 @@ public:
 	friend vector3<T> abs(const vector3<T>& v) { return vector3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z)); }
 	friend vector3<T> min(const vector3<T>& lhs, const vector3<T>& rhs) { return vector3<T>(std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z)); }
 	friend vector3<T> max(const vector3<T>& lhs, const vector3<T>& rhs) { return vector3<T>(std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z)); }
-	void clamp(const T min, const T max) { x = std::max(min, std::min(x, max)); y = std::max(min, std::min(y, max)); z = std::max(min, std::min(z, max)); }
-	void clamp(const vector3<T>& min, const vector3<T>& max) { x = std::max(min.x, std::min(x, max.x)); y = std::max(min.y, std::min(y, max.y)); z = std::max(min.z, std::min(z, max.z)); }
-	friend vector3<T> clamp(const vector3<T>& value, const T min, const T max) { return vector3<T>(std::max(min, std::min(value.x, max)), std::max(min, std::min(value.y, max)), std::max(min, std::min(value.z, max))); }
-	friend vector3<T> clamp(const vector3<T>& value, const vector3<T>& min, const vector3<T>& max) { return vector3<T>(std::max(min.x, std::min(value.x, max.x)), std::max(min.y, std::min(value.y, max.y)), std::max(min.z, std::min(value.z, max.z))); }
+	void clamp(const T min, const T max) { x = clamp<T>(x, min, max); y = clamp<T>(y, min, max); z = clamp<T>(z, min, max); }
+	void clamp(const vector3<T>& min, const vector3<T>& max) { x = clamp<T>(x, min.x, max.x); y = clamp<T>(y, min.y, max.y); z = clamp<T>(z, min.z, max.z); }
+	friend vector3<T> clamp(const vector3<T>& value, const T min, const T max) { return vector3<T>(clamp<T>(value.x, min, max), clamp<T>(value.y, min, max), clamp<T>(value.z, min, max)); }
+	friend vector3<T> clamp(const vector3<T>& value, const vector3<T>& min, const vector3<T>& max) { return vector3<T>(clamp<T>(value.x, min.x, max.x), clamp<T>(value.y, min.y, max.y), clamp<T>(value.z, min.z, max.z)); }
 	vector3<T> cross(const vector3<T>& v) const { return vector3<T>((y * v.z) - (z * v.y), (z * v.x) - (x * v.z), (x * v.y) - (y * v.x)); }
 	friend vector3<T> edge(const vector3<T>& v0, const vector3<T>& v1) { T A = v0.y - v1.y; T B = v1.x - v0.x; return vector3<T>(A, B, -(A * (v0.x + v1.x) + B * (v0.y + v1.y)) / T(2)); }
 	friend vector3<T> cross(const vector3<T>& v1, const vector3<T>& v2) { return v1.cross(v2); }
@@ -88,4 +88,5 @@ public:
 
 typedef vector3<float> float3;
 typedef vector3<double> double3;
+typedef vector3<uint16_t> uint3;
 typedef vector3<uint8_t> ubyte3;

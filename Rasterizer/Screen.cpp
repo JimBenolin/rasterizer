@@ -261,8 +261,6 @@ void CScreen::drawLine(const float2& p0, const float2& p1)
 
 void CScreen::rasterize(const floattc& tc)
 {
-	float4 c[3] = { tc.vc0.c, tc.vc1.c, tc.vc2.c };
-
 	float doubleArea;
 	float3 e0, e1, e2;
 
@@ -305,6 +303,7 @@ void CScreen::rasterize(const floattc& tc)
 	bool t;
 	float ev, A, B;
 	float3 barycentric;
+	uint2 p;
 
 	for (int s = 0; s < mSamples; s++)
 	{
@@ -313,63 +312,84 @@ void CScreen::rasterize(const floattc& tc)
 		float ev1 = e1.dot(float3(mSamplePositions[s].x, mSamplePositions[s].y, 1));
 		float ev2 = e2.dot(float3(mSamplePositions[s].x, mSamplePositions[s].y, 1));
 
-
 		floatbb bb(floatt(tc.vc0.v, tc.vc1.v, tc.vc2.v));
+		bb.clamp(0, float(mWidth), 0, float(mHeight));
 
-		for (int y = int(bb.y0); y < int(bb.y1) + 1; y++)
+		for (p.y = int(bb.y0); p.y < int(bb.y1) + 1; p.y++)
 		{
-			for (int x = int(bb.x0); x < int(bb.x1) + 1; x++)
+			for (p.x = int(bb.x0); p.x < int(bb.x1) + 1; p.x++)
 			{
 				A = e0.x;
 				B = e0.y;
 				t = (A != 0 ? A > 0 : B > 0);
-				ev = ev0 + A * x + B * y;
+				ev = ev0 + A * p.x + B * p.y;
 				if (!(ev > 0 || (ev == 0 && t)))
 					continue;
-				barycentric.u = ev / doubleArea;
+				barycentric.w = ev / doubleArea;
 
 				A = e1.x;
 				B = e1.y;
 				t = (A != 0 ? A > 0 : B > 0);
-				ev = ev1 + A * x + B * y;
+				ev = ev1 + A * p.x + B * p.y;
 				if (!(ev > 0 || (ev == 0 && t)))
 					continue;
-				barycentric.v = ev / doubleArea;
+				barycentric.u = ev / doubleArea;
 
 				A = e2.x;
 				B = e2.y;
 				t = (A != 0 ? A > 0 : B > 0);
-				ev = ev2 + A * x + B * y;
+				ev = ev2 + A * p.x + B * p.y;
 				if (!(ev > 0 || (ev == 0 && t)))
 					continue;
-				barycentric.w = 1 - barycentric.u - barycentric.v;
+				barycentric.v = 1 - barycentric.u - barycentric.w;
 
-				float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(float3(barycentric.w, barycentric.v, barycentric.u));
-				if (mpDepthBuffer->test(x, y, s, z))
+				float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(barycentric);
+				if (z < -1 || z > 1)
+					continue;
+				jmath::clamp<float>(z, -1, 1);
+				if (mpDepthBuffer->test(p.x, p.y, s, z))
 				{
 					if (bDepthColor)
-					{
-						if (z < -1)
-							setColor(float4(1, 0, 0, 0));
-						else if (z > 1)
-							setColor(float4(0, 1, 0, 0));
-						else
-							setColor(float4((z + 1) / 2, (z + 1) / 2, (z + 1) / 2, (z + 1) / 2));
-					}
+						shadeDepth(p, z);
 					else
-						setColor(barycentric.v * c[0] + barycentric.w * c[1] + barycentric.u * c[2]);
+						shade(tc, p, barycentric, s);
 
-					if (mSamples > 1)
-						mpRenderBuffer->set(x, y, s, mColor);
-					else
-						drawPixel(uint2(x, y));
-
-					mpDepthBuffer->set(x, y, s, z);
+					mpDepthBuffer->set(p.x, p.y, s, z);
 				}
 			}
 		}
 	}
 
+}
+
+
+void CScreen::shade(const floattc& triangle, const uint2& pixel, const float3& barycentric, const int sample)
+{
+	setColor(barycentric.u * triangle.vc0.c + barycentric.v * triangle.vc1.c + barycentric.w * triangle.vc2.c);
+
+	if (mSamples > 1)
+		mpRenderBuffer->set(pixel.x, pixel.y, sample, mColor);
+	else
+		drawPixel(uint2(pixel.x, pixel.y));
+}
+
+
+void CScreen::shadeDepth(const uint2& pixel, const float z)
+{
+	if (z < -1)
+		setColor(float4(1, 0, 0, 0));
+	else if (z > 1)
+		setColor(float4(0, 1, 0, 0));
+	else
+	{
+		float zColor = std::pow((z + 1) / 2, 50);
+		setColor(float4(zColor, zColor, zColor, zColor));
+	}
+
+	if (mSamples > 1)
+		mpRenderBuffer->set(pixel.x, pixel.y, 0, mColor);
+	else
+		drawPixel(uint2(pixel.x, pixel.y));
 }
 
 

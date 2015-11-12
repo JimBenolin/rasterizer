@@ -67,10 +67,10 @@ public:
 	friend vector2<T> abs(const vector2<T>& v) { return vector2<T>(std::abs(v.x), std::abs(v.y)); }
 	friend vector2<T> min(const vector2<T>& lhs, const vector2<T>& rhs) { return vector2<T>(std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y)); }
 	friend vector2<T> max(const vector2<T>& lhs, const vector2<T>& rhs) { return vector2<T>(std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y)); }
-	void clamp(const T min, const T max) { x = std::max(min, std::min(x, max)); y = std::max(min, std::min(y, max)); }
-	void clamp(const vector2<T>& min, const vector2<T>& max) { x = std::max(min.x, std::min(x, max.x)); y = std::max(min.y, std::min(y, max.y)); }
-	friend vector2<T> clamp(const vector2<T>& value, const T min, const T max) { return vector2<T>(std::max(min, std::min(value.x, max)), std::max(min, std::min(value.y, max))); }
-	friend vector2<T> clamp(const vector2<T>& value, const vector2<T>& min, const vector2<T>& max) { return vector2<T>(std::max(min.x, std::min(value.x, max.x)), std::max(min.y, std::min(value.y, max.y))); }
+	void clamp(const T min, const T max) { x = clamp<T>(x, min, max); y = clamp<T>(y, min, max); }
+	void clamp(const vector2<T>& min, const vector2<T>& max) { x = clamp<T>(x, min.x, max.x); y = clamp<T>(y, min.y, max.y); }
+	friend vector2<T> clamp(const vector2<T>& value, const T min, const T max) { return vector2<T>(clamp<T>(value.x, min, max), clamp<T>(value.y, min, max)); }
+	friend vector2<T> clamp(const vector2<T>& value, const vector2<T>& min, const vector2<T>& max) { return vector2<T>(clamp<T>(value.x, min.x, max.x), clamp<T>(value.y, min.y, max.y)); }
 
 	//  debug
 	friend std::ostream& operator<<(std::ostream& os, const vector2<T>& v) { os << "[" << v.x << ", " << v.y << "]"; return os; }

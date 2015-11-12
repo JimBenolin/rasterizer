@@ -26,7 +26,8 @@ public:
 
 	bool clip(void)
 	{
-		float clipDistance = 1.2f;
+		const float clipDistance = 1;
+
 		if (vc0.v.x < -clipDistance || vc0.v.x > clipDistance)
 			return true;
 		if (vc1.v.x < -clipDistance || vc1.v.x > clipDistance)
@@ -41,10 +42,12 @@ public:
 			return true;
 		if (vc0.v.z < -clipDistance || vc0.v.z > clipDistance)
 			return true;
+#if 1
 		if (vc1.v.z < -clipDistance || vc1.v.z > clipDistance)
 			return true;
 		if (vc2.v.z < -clipDistance || vc2.v.z > clipDistance)
 			return true;
+#endif
 
 		return false;
 	}

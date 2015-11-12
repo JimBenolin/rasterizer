@@ -8,6 +8,7 @@
 #include "DepthBuffer.h"
 #include "RenderBuffer.h"
 #include "BoundingBox.h"
+#include "triangle.h"
 
 
 enum ScreenAction {
@@ -121,6 +122,8 @@ public:
 	void drawLine(const float2& p0, const float2& p1);
 
 	void rasterize(const floattc& tc);
+	void shade(const floattc& triangle, const uint2& pixel, const float3& barycentric, const int sample = 0);
+	void shadeDepth(const uint2& pixel, const float z);
 	void resolve(void);
 };
 

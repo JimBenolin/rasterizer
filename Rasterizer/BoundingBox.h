@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "JimMath.h"
+
 #include "vertex.h"
 #include "triangle.h"
 
@@ -19,6 +21,14 @@ public:
 	}
 	CBoundingBox<T>(T _x0, T _y0, T _x1, T _y1) : x0(std::min(_x0, _x1)), y0(std::min(_y0, _y1)), x1(std::max(_x0, _x1) + T(0.5)), y1(std::max(_y0, _y1) + T(0.5)) {}
 	~CBoundingBox() {}
+
+	inline void clamp(const T xMin, const T xMax, const T yMin, const T yMax)
+	{
+		x0 = jmath::clamp<T>(x0, xMin, xMax);
+		y0 = jmath::clamp<T>(y0, yMin, yMax);
+		x1 = jmath::clamp<T>(x1, xMin, xMax);
+		y1 = jmath::clamp<T>(y1, yMin, yMax);
+	}
 };
 
 typedef CBoundingBox<float> floatbb;
