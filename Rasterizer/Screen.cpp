@@ -4,71 +4,76 @@
 CScreen::CScreen(std::string name, int width, int height, int samples)
 	: mName(name), mWidth(width), mHeight(height), mSamples(samples)
 {
-	bWireframe = false;
-//	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-//	{
-//		std::cout << "[SDL]  Could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-//		exit(-1);
-//	}
-//	else
-	{
-		//Create window
-#if 1
-//		SDL_Rect r;
-//		SDL_GetDisplayBounds(0, &r);
-//		mWidth = r.w;
-//		mHeight = r.h;
-		mpWindow = SDL_CreateWindow(mName.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_FULLSCREEN_DESKTOP);
-#else
-		mpWindow = SDL_CreateWindow(mName.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_SHOWN);
-#endif
-		if (mpWindow == NULL)
-		{
-			std::cout << "[SDL]  Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-			exit(-1);
-		}
-		else
-		{
-			mpSurface = SDL_GetWindowSurface(mpWindow);
-			mpRenderer = SDL_CreateRenderer(mpWindow, -1, SDL_RENDERER_ACCELERATED);
-			if (mpRenderer == NULL)
-			{
-				std::cout << "[SDL]  Could not create Renderer! SDL_Error: " << SDL_GetError() << std::endl;
-				exit(-1);
-			}
-
-			mpDepthBuffer = new CDepthBuffer(mWidth, mHeight, mSamples);
-
-			if (mSamples == 1)
-				mSamplePositions = SamplePositions1;
-			else if (mSamples == 4)
-			{
-				mSamplePositions = SamplePositions4;
-				mpRenderBuffer = new CRenderBuffer(mWidth, mHeight, mSamples);
-			}
-			else if (mSamples == 8)
-			{
-				mSamplePositions = SamplePositions8;
-				mpRenderBuffer = new CRenderBuffer(mWidth, mHeight, mSamples);
-			}
-			else if (mSamples == 16)
-			{
-				mSamplePositions = SamplePositions16;
-				mpRenderBuffer = new CRenderBuffer(mWidth, mHeight, mSamples);
-			}
-
-			mColor = { 0x00, 0x00, 0x00, 0xff };
-			mClearColor = { 0xff, 0xff, 0xff, 0x00 };
-			clear();
-		}
-	}
-
+	bFullscreen = false;
+	init();
 }
 
 
-void init()
+CScreen::CScreen(std::string name, int samples)
+	: mName(name), mSamples(samples)
 {
+	bFullscreen = true;
+	init();
+}
 
+
+void CScreen::init(void)
+{
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		std::cout << "[SDL]  Could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+		exit(-1);
+	}
+
+	SDL_GetDisplayBounds(0, &mScreenBounds);
+
+	if (bFullscreen)
+	{
+		mWidth = mScreenBounds.w;
+		mHeight = mScreenBounds.h;
+		mpWindow = SDL_CreateWindow(mName.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	}
+	else
+	{
+		mpWindow = SDL_CreateWindow(mName.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_SHOWN);
+	}
+
+	if (mpWindow == NULL)
+	{
+		std::cout << "[SDL]  Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+		exit(-1);
+	}
+
+	mpSurface = SDL_GetWindowSurface(mpWindow);
+	mpRenderer = SDL_CreateRenderer(mpWindow, -1, SDL_RENDERER_ACCELERATED);
+
+	if (mpRenderer == NULL)
+	{
+		std::cout << "[SDL]  Could not create Renderer! SDL_Error: " << SDL_GetError() << std::endl;
+		exit(-1);
+	}
+
+	mpDepthBuffer = new CDepthBuffer(mWidth, mHeight, mSamples);
+
+	if (mSamples == 1)
+		mSamplePositions = SamplePositions1;
+	else if (mSamples == 4)
+		mSamplePositions = SamplePositions4;
+	else if (mSamples == 8)
+		mSamplePositions = SamplePositions8;
+	else if (mSamples == 16)
+		mSamplePositions = SamplePositions16;
+
+	mpRenderBuffer = new CRenderBuffer(mWidth, mHeight, mSamples);
+
+	mColor = { 0x00, 0x00, 0x00, 0xff };
+	mClearColor = { 0xff, 0xff, 0xff, 0x00 };
+	clear();
+
+	bKeyDown = false;
+	bPaused = false;
+	bWireframe = false;
+	bDepthColor = false;
 }
 
 
@@ -101,18 +106,12 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 
 		if (event.key.type == SDL_KEYDOWN || event.key.type == SDL_KEYUP)
 		{
-			keyDown = true;
+			bKeyDown = true;
 
 			switch (event.key.keysym.sym) {
 
 			case SDLK_ESCAPE:
 				return SCREEN_ACTION_QUIT;
-				break;
-
-			case SDLK_SPACE:
-				return SCREEN_ACTION_PAUSE;
-				isPaused = (isPaused ? false : true);
-//				singleStep = isPaused;
 				break;
 
 			case SDLK_u:
@@ -167,7 +166,7 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 		
 		if (event.key.type == SDL_KEYUP)
 		{
-			keyDown = false;
+			bKeyDown = false;
 
 			switch (event.key.keysym.sym) {
 
@@ -183,6 +182,14 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 
 			case SDLK_f:
 				bWireframe = !bWireframe;
+				break;
+
+			case SDLK_SPACE:
+				bPaused = (bPaused ? false : true);
+				break;
+
+			case SDLK_z:
+				bDepthColor = (bDepthColor ? false : true);
 				break;
 
 			default:
@@ -340,24 +347,23 @@ void CScreen::rasterize(const floattc& tc)
 				float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(float3(barycentric.w, barycentric.v, barycentric.u));
 				if (mpDepthBuffer->test(x, y, s, z))
 				{
-#if 1
-					setColor(barycentric.v * c[0] + barycentric.w * c[1] + barycentric.u * c[2]);
-#else
-					if (z < -1)
-						setColor(float4(1, 0, 0, 0));
-					else if (z > 1)
-						setColor(float4(0, 1, 0, 0));
+					if (bDepthColor)
+					{
+						if (z < -1)
+							setColor(float4(1, 0, 0, 0));
+						else if (z > 1)
+							setColor(float4(0, 1, 0, 0));
+						else
+							setColor(float4((z + 1) / 2, (z + 1) / 2, (z + 1) / 2, (z + 1) / 2));
+					}
 					else
-						setColor(float4((z + 1) / 2, (z + 1) / 2, (z + 1) / 2, (z + 1) / 2) / 2.0f);
-#endif
+						setColor(barycentric.v * c[0] + barycentric.w * c[1] + barycentric.u * c[2]);
+
 					if (mSamples > 1)
-					{
 						mpRenderBuffer->set(x, y, s, mColor);
-					}
 					else
-					{
 						drawPixel(uint2(x, y));
-					}
+
 					mpDepthBuffer->set(x, y, s, z);
 				}
 			}
@@ -369,19 +375,19 @@ void CScreen::rasterize(const floattc& tc)
 
 void CScreen::resolve(void)
 {
-		for (int y = 0; y < mHeight; y++)
+	for (int y = 0; y < mHeight; y++)
+	{
+		for (int x = 0; x < mWidth; x++)
 		{
-			for (int x = 0; x < mWidth; x++)
+			ubyte4 color = { 0, 0, 0, 0 };
+			uint4 totalColor = { 0, 0, 0, 0 };
+			for (int s = 0; s < mSamples; s++)
 			{
-				ubyte4 color = { 0, 0, 0, 0 };
-				uint4 totalColor = { 0, 0, 0, 0 };
-				for (int s = 0; s < mSamples; s++)
-				{
-					color = mpRenderBuffer->get(x, y, s);
-					totalColor += uint4(color.r, color.g, color.b, color.a);
-				}
-				setColor(ubyte4(uint8_t(totalColor.r / mSamples), uint8_t(totalColor.g / mSamples), uint8_t(totalColor.b / mSamples), uint8_t(totalColor.a / mSamples)));
-				drawPixel(uint2(x, y));
+				color = mpRenderBuffer->get(x, y, s);
+				totalColor += uint4(color.r, color.g, color.b, color.a);
 			}
+			setColor(ubyte4(uint8_t(totalColor.r / mSamples), uint8_t(totalColor.g / mSamples), uint8_t(totalColor.b / mSamples), uint8_t(totalColor.a / mSamples)));
+			drawPixel(uint2(x, y));
 		}
+	}
 }

@@ -10,30 +10,19 @@
 #include "Timer.h"
 
 
-int width = 500;
-int height = 500;
-
+int windowWidth = 500;
+int windowHeight = 500;
 
 static float rotationVelocity = float((2 * M_PI) / 40);
 static float rotationAngle = 0.0f;
 
-
 int main(int argc, char* argv[])
 {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		std::cout << "[SDL]  Could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-		exit(-1);
-	}
+	CScreen screen("Test", windowWidth, windowHeight, 1);
+//	CScreen screen("Test");
 
-	int numDisplays = SDL_GetNumVideoDisplays();
-	SDL_Rect r;
-	SDL_GetDisplayBounds(0, &r);
-
-	width = r.w;
-	height = r.h;
-	CScreen screen("Test", width, height, 1);
-
+	int width = screen.getWidth();
+	int height = screen.getHeight();
 
 	float4x4 screenScaleT = float4x4::scale(float(width), float(height), 1.0f);
 	float4x4 screenTranslationT = float4x4::translation(float(width) / 2, float(height) / 2, 0);
@@ -48,8 +37,6 @@ int main(int argc, char* argv[])
 	float2 position(0, 10);
 	Movement movement = { 0, 0, 0, 0, float(M_PI / 2) };
 
-	CModel singleTriangle;
-	singleTriangle.addSingle();
 	CModel model;
 	model.addAxes();
 	model.addCubeRGB(float3(0, 0, 0), float3(1, 1, 1));
@@ -58,8 +45,7 @@ int main(int argc, char* argv[])
 	checkerBoard.addCheckerBoard(10);
 
 	CTimer timer;
-	ScreenAction screenAction;
-	while ((screenAction = screen.getUserInput(movement)) != SCREEN_ACTION_QUIT)
+	while (screen.getUserInput(movement) != SCREEN_ACTION_QUIT)
 	{
 		screen.clear();
 
@@ -68,24 +54,8 @@ int main(int argc, char* argv[])
 		projectionT = float4x4::projectionPerspective(movement.fov, float(width), float(height), -0.01f, -50.0f);
 //		projectionT = float4x4::projectionPerspectiveB(0.1f, 1000, 5, -5, -5, 5);
 
-#if 0
-		modelT = float4x4::translation(0, 0, -3);
-		mvpT = projectionT * viewT * modelT;
-		for (auto triangle : singleTriangle.getTriangles())
-		{
-			floattc triangleT = triangle;
-			triangleT.transform(mvpT);
-
-	//		if (triangleT.clip())
-		//		continue;
-
-			triangleT.transform(screenTransformT);
-
-			screen.rasterize(triangleT);
-		}
-#endif
 #if 1
-		modelT = float4x4::translation(0, 1, -4) * float4x4::rotateAxisY(-rotationAngle);
+		modelT = float4x4::translation(0, 1, 0) * float4x4::rotateAxisY(-rotationAngle);
 		mvpT = projectionT * viewT * modelT;
 		for (auto triangle : model.getTriangles())
 		{
@@ -100,8 +70,8 @@ int main(int argc, char* argv[])
 			screen.rasterize(triangleT);
 		}
 
-//		modelT = float4x4::rotateAxisY(rotationAngle);
-		modelT = float4x4::translation(0, 0, -1);
+		modelT = float4x4::rotateAxisY(rotationAngle);
+//		modelT = float4x4::translation(0, 0, -4);
 		mvpT = projectionT * viewT * modelT;
 		for (auto triangle : checkerBoard.getTriangles())
 		{
@@ -121,12 +91,13 @@ int main(int argc, char* argv[])
 
 		float frameTime = float(timer.getAndSet()) / 1000000.0f;
 
-#if 1
-		if (screenAction != SCREEN_ACTION_PAUSE)
+		if (!screen.isPaused())
+		{
 			rotationAngle += frameTime * rotationVelocity;
+		}
+		
 		float2x2 rot = float2x2::rotation(movement.yaw);
 		position += float2(movement.xVelocity, movement.yVelocity) * rot * frameTime;
-#endif
 
 //		std::cout << "frame time [s]: " << frameTime << std::endl;
 	}

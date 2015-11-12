@@ -80,20 +80,30 @@ private:
 	CDepthBuffer* mpDepthBuffer;
 	CRenderBuffer* mpRenderBuffer;
 	float2* mSamplePositions;
+	SDL_Rect mScreenBounds;
 
 	ScreenEvent mEvent;
-	bool isPaused;
 	bool singleStep;
-	bool keyDown;
+
+	bool bKeyDown;
+	bool bPaused;
 	bool bWireframe;
+	bool bFullscreen;
+	bool bDepthColor;
 
 private:
+	void init();
 	inline void setRenderDrawColor(const ubyte4& color) { SDL_SetRenderDrawColor(mpRenderer, mClearColor.r, mClearColor.g, mClearColor.b, mClearColor.a); }
 public:
-	CScreen(std::string name, int width, int height, int samples = 1);
+	CScreen(std::string name, int width, int height, int samples = 1);  //  window
+	CScreen(std::string name, int samples = 1);  //  fullscreen
 	~CScreen();
 
-	static inline void getDesktopSize(SDL_Rect& rect) { SDL_GetDisplayBounds(0, &rect); }
+	inline bool isKeyDown(void) { return bKeyDown; }
+	inline bool isPaused(void) { return bPaused; }
+	inline bool isWireFrame(void) { return bWireframe; }
+	inline bool isFullScreen(void) { return bFullscreen; }
+
 	inline int getWidth(void) const { return mWidth; }
 	inline int getHeight(void) const { return mHeight; }
 	inline void setColor(const ubyte4& color) { mColor = color; mColor.clamp(0, 255); }
