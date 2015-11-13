@@ -132,6 +132,8 @@
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="RenderBuffer.cpp" />
     <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureSampler.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +148,10 @@
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="RenderBuffer.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stb_image_write.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureSampler.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector2.h" />

@@ -8,7 +8,7 @@
 #include "Screen.h"
 #include "Model.h"
 #include "Timer.h"
-
+#include "Texture.h"
 
 int windowWidth = 500;
 int windowHeight = 500;
@@ -18,6 +18,8 @@ static float rotationAngle = 0.0f;
 
 int main(int argc, char* argv[])
 {
+	CTexture texture("../textures/uvmap.png");
+
 	CScreen screen("Test", windowWidth, windowHeight, 1);
 //	CScreen screen("Test");
 
@@ -35,7 +37,7 @@ int main(int argc, char* argv[])
 	float4x4 mvpT;
 
 	float2 position(0, 10);
-	Movement movement = { 0, 0, 0, 0, float(M_PI / 2) };
+	Movement movement = { 0, 0, 0, 0, 0, 0, float(M_PI / 2) };
 
 	CModel model;
 	model.addAxes();

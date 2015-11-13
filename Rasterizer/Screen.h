@@ -8,6 +8,7 @@
 #include "DepthBuffer.h"
 #include "RenderBuffer.h"
 #include "BoundingBox.h"
+#include "Texture.h"
 #include "triangle.h"
 
 
@@ -120,6 +121,8 @@ public:
 	void drawLine(const uint16_t x0, const uint16_t y0, const uint16_t x1, const uint16_t y1);
 	void drawLine(const uint2& p0, const uint2& p1);
 	void drawLine(const float2& p0, const float2& p1);
+
+	void drawTexture(const CTexture& texture, const int x, const int y, const int width = -1, const int height = -1);
 
 	void rasterize(const floattc& tc);
 	void shade(const floattc& triangle, const uint2& pixel, const float3& barycentric, const int sample = 0);

@@ -96,13 +96,12 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 		int x = event.motion.x;
 		int y = event.motion.y;
 
-
-		mEvent.xOld = mEvent.x;
-		mEvent.yOld = mEvent.y;
 		mEvent.x = x;
 		mEvent.y = y;
+		movement.x = event.motion.x;
+		movement.y = event.motion.y;
 
-		std::cout << "(" << mEvent.x << ", " << mEvent.x << ")" << std::endl;
+		std::cout << "(" << mEvent.x << ", " << mEvent.y << ")" << std::endl;
 
 		if (event.key.type == SDL_KEYDOWN || event.key.type == SDL_KEYUP)
 		{
@@ -247,6 +246,7 @@ void CScreen::drawLine(const uint16_t x0, const uint16_t y0, const uint16_t x1, 
 	SDL_RenderDrawLine(mpRenderer, x0, y0, x1, y1);
 }
 
+
 void CScreen::drawLine(const uint2& p0, const uint2& p1)
 {
 	drawLine(p0.x, p0.y, p1.x, p1.y);
@@ -257,6 +257,26 @@ void CScreen::drawLine(const float2& p0, const float2& p1)
 {
 	drawLine(uint16_t(p0.x + 0.5f), uint16_t(p0.y + 0.5f), uint16_t(p1.x + 0.5f), uint16_t(p1.y + 0.5f));
 }
+
+
+void CScreen::drawTexture(const CTexture& texture, const int x, const int y, const int width, const int height)
+{
+	int scaleWidth = (width == -1 ? texture.getWidth() : width);
+	int scaleHeight = (height == -1 ? texture.getHeight() : height);
+
+	float dx = 1 / float(scaleWidth - 1);
+	float dy = 1 / float(scaleHeight - 1);
+
+	for (int yy = 0; yy < scaleHeight; yy++)
+	{
+		for (int xx = 0; xx < scaleWidth; xx++)
+		{
+			setColor(texture.getTexel(xx * dx, yy * dy));
+			drawPixel(x + xx, y + yy);
+		}
+	}
+}
+
 
 
 void CScreen::rasterize(const floattc& tc)
