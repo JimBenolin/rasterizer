@@ -10,15 +10,40 @@
 #include "Timer.h"
 #include "Texture.h"
 
+
 int windowWidth = 500;
 int windowHeight = 500;
 
 static float rotationVelocity = float((2 * M_PI) / 40);
 static float rotationAngle = 0.0f;
 
+struct RasterizerTile
+{
+	floattc* triangle;
+	int x, y, w, h;
+};
+
+DWORD WINAPI MyThreadProc(LPVOID pParam)
+{
+	RasterizerTile* pObject = (RasterizerTile*)pParam;
+
+	pObject->x = 10;
+	pObject->y = 11;
+
+	return 0;
+}
+
 int main(int argc, char* argv[])
 {
 	CTexture texture("../textures/uvmap.png");
+
+	HANDLE hThread;
+	DWORD threadId;
+	RasterizerTile tile = { nullptr, 0, 0, 0, 0 };
+	hThread = CreateThread(NULL, 0, MyThreadProc, &tile, 0, &threadId);
+	WaitForSingleObject(hThread, INFINITE);
+	CloseHandle(hThread);
+
 
 	CScreen screen("Test", windowWidth, windowHeight, 1);
 //	CScreen screen("Test");

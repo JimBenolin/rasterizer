@@ -203,7 +203,7 @@ ScreenAction CScreen::getUserInput(Movement& movement)
 			movement.pitch = (mHeight / 2 - mEvent.y) * 0.005f;
 			movement.pitch = std::min(float(M_PI), std::max(-float(M_PI), movement.pitch));
 
-			movement.yaw = (mWidth / 2 - mEvent.x) * 0.005f;
+			movement.yaw = (mWidth / 2 - mEvent.x) * 0.01f;
 //			movement.yaw = std::min(float(M_PI), std::max(-float(M_PI), movement.yaw));
 		}
 		else if (event.key.type == SDL_MOUSEBUTTONDOWN)
@@ -299,24 +299,7 @@ void CScreen::rasterize(const floattc& tc)
 
 	if (bWireframe)
 	{
-		//  triangle is back-facing or zero-area
-		float3 v[3] = { tc.vc0.v, tc.vc1.v, tc.vc2.v };
-		if (v[0].x < 0 || v[0].x >= mWidth)
-			return;
-		if (v[1].x < 0 || v[1].x >= mWidth)
-			return;
-		if (v[2].x < 0 || v[2].x >= mWidth)
-			return;
-		if (v[0].y < 0 || v[0].y >= mHeight)
-			return;
-		if (v[1].y < 0 || v[1].y >= mHeight)
-			return;
-		if (v[2].y < 0 || v[2].y >= mHeight)
-			return;
-		setColor(ubyte4(0, 0, 0, 0));
-		drawLine(uint16_t(v[0].x), uint16_t(v[0].y), uint16_t(v[1].x), uint16_t(v[1].y));
-		drawLine(uint16_t(v[1].x), uint16_t(v[1].y), uint16_t(v[2].x), uint16_t(v[2].y));
-		drawLine(uint16_t(v[2].x), uint16_t(v[2].y), uint16_t(v[0].x), uint16_t(v[0].y));
+		shadeWireframe(tc);
 		return;
 	}
 
@@ -391,6 +374,28 @@ void CScreen::shade(const floattc& triangle, const uint2& pixel, const float3& b
 		mpRenderBuffer->set(pixel.x, pixel.y, sample, mColor);
 	else
 		drawPixel(uint2(pixel.x, pixel.y));
+}
+
+
+void CScreen::shadeWireframe(const floattc& triangle)
+{
+	float3 v[3] = { triangle.vc0.v, triangle.vc1.v, triangle.vc2.v };
+	if (v[0].x < 0 || v[0].x >= mWidth)
+		return;
+	if (v[1].x < 0 || v[1].x >= mWidth)
+		return;
+	if (v[2].x < 0 || v[2].x >= mWidth)
+		return;
+	if (v[0].y < 0 || v[0].y >= mHeight)
+		return;
+	if (v[1].y < 0 || v[1].y >= mHeight)
+		return;
+	if (v[2].y < 0 || v[2].y >= mHeight)
+		return;
+	setColor(ubyte4(0, 0, 0, 0));
+	drawLine(uint16_t(v[0].x), uint16_t(v[0].y), uint16_t(v[1].x), uint16_t(v[1].y));
+	drawLine(uint16_t(v[1].x), uint16_t(v[1].y), uint16_t(v[2].x), uint16_t(v[2].y));
+	drawLine(uint16_t(v[2].x), uint16_t(v[2].y), uint16_t(v[0].x), uint16_t(v[0].y));
 }
 
 

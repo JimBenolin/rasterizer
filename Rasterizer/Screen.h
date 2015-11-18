@@ -126,6 +126,7 @@ public:
 
 	void rasterize(const floattc& tc);
 	void shade(const floattc& triangle, const uint2& pixel, const float3& barycentric, const int sample = 0);
+	void shadeWireframe(const floattc& triangle);
 	void shadeDepth(const uint2& pixel, const float z);
 	void resolve(void);
 };
