@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector4.h"
+#include "../jmath/jmath.h"
 
 const float4 gray75 = { 0.75f, 0.75f, 0.75f, 0 };
 const float4 gray50 = { 0.5f, 0.5f, 0.5f, 0 };

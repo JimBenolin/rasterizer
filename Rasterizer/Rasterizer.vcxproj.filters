@@ -9,15 +9,14 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Dependencies">
       <UniqueIdentifier>{106df646-e69f-4ff2-bb0f-1bfe32898d33}</UniqueIdentifier>
     </Filter>
     <Filter Include="jmath">
       <UniqueIdentifier>{f172ba53-eb34-4d98-a812-5182b6c0a907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stb">
+      <UniqueIdentifier>{76e3561e-1352-476e-9792-953edf828831}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -59,9 +58,6 @@
     <ClInclude Include="DepthBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BoundingBox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -86,29 +82,38 @@
     <ClInclude Include="stb_image.h">
       <Filter>Dependencies</Filter>
     </ClInclude>
-    <ClInclude Include="matrix4x4.h">
-      <Filter>jmath</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix2x2.h">
-      <Filter>jmath</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix3x3.h">
-      <Filter>jmath</Filter>
-    </ClInclude>
-    <ClInclude Include="JimMath.h">
-      <Filter>jmath</Filter>
-    </ClInclude>
-    <ClInclude Include="vector4.h">
-      <Filter>jmath</Filter>
-    </ClInclude>
-    <ClInclude Include="vector2.h">
-      <Filter>jmath</Filter>
-    </ClInclude>
-    <ClInclude Include="vector3.h">
-      <Filter>jmath</Filter>
-    </ClInclude>
     <ClInclude Include="vertex.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\jmath\boundingbox.h">
+      <Filter>jmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\jmath\jmath.h">
+      <Filter>jmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\jmath\matrix2x2.h">
+      <Filter>jmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\jmath\matrix3x3.h">
+      <Filter>jmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\jmath\matrix4x4.h">
+      <Filter>jmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\jmath\vector2.h">
+      <Filter>jmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\jmath\vector3.h">
+      <Filter>jmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\jmath\vector4.h">
+      <Filter>jmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stb\stb_image.h">
+      <Filter>stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stb\stb_image_write.h">
+      <Filter>stb</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

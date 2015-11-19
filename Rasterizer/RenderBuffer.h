@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector4.h"
+#include "../jmath/jmath.h"
 
 class CRenderBuffer
 {

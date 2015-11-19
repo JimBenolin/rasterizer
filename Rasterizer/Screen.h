@@ -2,12 +2,11 @@
 
 #include <iostream>
 
+#include "../jmath/jmath.h"
 #include "Rasterizer.h"
 #include "SDL.h"
-#include "JimMath.h"
 #include "DepthBuffer.h"
 #include "RenderBuffer.h"
-#include "BoundingBox.h"
 #include "Texture.h"
 #include "triangle.h"
 

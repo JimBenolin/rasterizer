@@ -1,7 +1,7 @@
 #pragma once
 
+#include "../jmath/jmath.h"
 #include "vertex.h"
-#include "matrix4x4.h"
 
 
 template<typename T> class triangle

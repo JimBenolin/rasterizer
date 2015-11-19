@@ -4,7 +4,7 @@
 
 #include "color.h"
 #include "triangle.h"
-#include "JimMath.h"
+#include "../jmath/jmath.h"
 #include "Screen.h"
 #include "Model.h"
 #include "Timer.h"

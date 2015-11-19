@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-#include "vector4.h"
+#include "../jmath/jmath.h"
 
 
 class CTexture

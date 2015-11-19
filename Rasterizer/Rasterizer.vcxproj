@@ -137,13 +137,18 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="..\jmath\boundingbox.h" />
+    <ClInclude Include="..\jmath\jmath.h" />
+    <ClInclude Include="..\jmath\matrix2x2.h" />
+    <ClInclude Include="..\jmath\matrix3x3.h" />
+    <ClInclude Include="..\jmath\matrix4x4.h" />
+    <ClInclude Include="..\jmath\vector2.h" />
+    <ClInclude Include="..\jmath\vector3.h" />
+    <ClInclude Include="..\jmath\vector4.h" />
+    <ClInclude Include="..\stb\stb_image.h" />
+    <ClInclude Include="..\stb\stb_image_write.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="DepthBuffer.h" />
-    <ClInclude Include="JimMath.h" />
-    <ClInclude Include="matrix2x2.h" />
-    <ClInclude Include="matrix3x3.h" />
-    <ClInclude Include="matrix4x4.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="RenderBuffer.h" />
@@ -154,9 +159,6 @@
     <ClInclude Include="TextureSampler.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="triangle.h" />
-    <ClInclude Include="vector2.h" />
-    <ClInclude Include="vector3.h" />
-    <ClInclude Include="vector4.h" />
     <ClInclude Include="vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
