@@ -16,10 +16,7 @@
 namespace jmath
 {
 	template<typename T>
-	T clamp(const T& value, const T& min, const T& max)
-	{
-		return std::min(max, std::max(value, min));
-	}
+	T clamp(const T& value, const T& min, const T& max) { return std::min(max, std::max(value, min)); }
 }
 
 #if 0
