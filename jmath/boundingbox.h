@@ -18,17 +18,19 @@ public:
 		min = std::min(_x0, _x1);
 		max = std::max(_x0, _x1);
 	}
-	~boundingbox1d() {}
+	~boundingbox1d<T>() {}
 
 	inline T left(void) const { return min; }
 	inline T right(void) const { return max; }
 
+	bool operator==(const boundingbox1d<T>& box) { return (min == box.min && max == box.max); }
+	bool operator!=(const boundingbox1d<T>& box) { return !(*this == box); }
 	boundingbox1d<T> operator+(const boundingbox1d<T>& box) const { return boundingbox1d<T>(std::min(min, box.min), std::max(max, box.max)); }
 	boundingbox1d<T> operator/(const boundingbox1d<T>& box) const { if (!this->overlaps(box)) return boundingbox1d<T>(T(0), T(0)); return boundingbox1d<T>(std::max(min, box.min), std::min(max, box.max)); }
 	boundingbox1d<T>& operator+=(const boundingbox1d<T>& box) { return *this = *this + box; }
 	boundingbox1d<T>& operator/=(const boundingbox1d<T>& box) { return *this = *this / box; }
 
-	inline bool empty(void) { return min == max; }
+	inline bool empty(void) const { return min == max; }
 
 	inline void clamp(const T xMin, const T xMax)
 	{
@@ -98,19 +100,21 @@ public:
 		min.y = std::min(std::min(v0.y, v1.y), v2.y);
 		max.y = std::max(std::max(v0.y, v1.y), v2.y);
 	}
-	~boundingbox2d() {}
+	~boundingbox2d<T>() {}
 
 	inline T left(void) const { return min.x; }
 	inline T right(void) const { return max.x; }
 	inline T top(void) const { return max.y; }
 	inline T bottom(void) const { return min.y; }
 
+	bool operator==(const boundingbox2d<T>& box) const { return (min.x == box.min.x && max.x == box.max.x && min.y == box.min.y && max.y == box.max.y); }
+	bool operator!=(const boundingbox2d<T>& box) const { return !(*this == box); }
 	boundingbox2d<T> operator+(const boundingbox2d<T>& box) const { return boundingbox2d<T>(std::min(min.x, box.min.x), std::min(min.y, box.min.y), std::max(max.x, box.max.x), std::max(max.y, box.max.y)); }
 	boundingbox2d<T> operator/(const boundingbox2d<T>& box) const { if (!this->overlaps(box)) return boundingbox2d<T>(T(0), T(0), T(0), T(0)); return boundingbox2d<T>(std::max(min.x, box.min.x), std::max(min.y, box.min.y), std::min(max.x, box.max.x), std::min(max.y, box.max.y)); }
 	boundingbox2d<T>& operator+=(const boundingbox2d<T>& box) { return *this = *this + box; }
 	boundingbox2d<T>& operator/=(const boundingbox2d<T>& box) { return *this = *this / box; }
 
-	inline bool empty(void) { return min.x == max.x || min.y == max.y; }
+	inline bool empty(void) const { return min.x == max.x || min.y == max.y; }
 
 	inline void clamp(const T xMin, const T yMin, const T xMax, const T yMax)
 	{
@@ -185,7 +189,7 @@ public:
 		min.z = std::min(v0.z, v1.z);
 		max.z = std::max(v0.z, v1.z);
 	}
-	~boundingbox3d() {}
+	~boundingbox3d<T>() {}
 
 	inline T left(void) const { return min.x; }
 	inline T right(void) const { return max.x; }
@@ -194,12 +198,14 @@ public:
 	inline T near(void) const { return max.z; }
 	inline T far(void) const { return min.z; }
 
+	bool operator==(const boundingbox3d<T>& box) const { return (min.x == box.min.x && max.x == box.max.x && min.y == box.min.y && max.y == box.max.y && min.z == box.min.z && max.z == box.max.z); }
+	bool operator!=(const boundingbox3d<T>& box) const { return !(*this == box); }
 	boundingbox3d<T> operator+(const boundingbox3d<T>& box) const { return boundingbox3d<T>(std::min(min.x, box.min.x), std::min(min.y, box.min.y), std::min(min.z, box.min.z), std::max(max.x, box.max.x), std::max(max.y, box.max.y), std::max(max.z, box.max.z)); }
 	boundingbox3d<T> operator/(const boundingbox3d<T>& box) const { if (!this->overlaps(box)) return boundingbox3d<T>(T(0), T(0), T(0), T(0), T(0), T(0)); return boundingbox3d<T>(std::max(min.x, box.min.x), std::max(min.y, box.min.y), std::max(min.z, box.min.z), std::min(max.x, box.max.x), std::min(max.y, box.max.y), std::min(max.z, box.max.z)); }
 	boundingbox3d<T>& operator+=(const boundingbox3d<T>& box) { return *this = *this + box; }
 	boundingbox3d<T>& operator/=(const boundingbox3d<T>& box) { return *this = *this / box; }
 
-	inline bool empty(void) { return min.x == max.x || min.y == max.y || min.z == max.z; }
+	inline bool empty(void) const { return min.x == max.x || min.y == max.y || min.z == max.z; }
 
 	inline void clamp(const T xMin, const T yMin, const T zMin, const T xMax, const T yMax, const T zMax)
 	{
