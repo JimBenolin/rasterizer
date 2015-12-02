@@ -3,58 +3,73 @@
 #include "../jmath/jmath.h"
 
 
-template<typename T> class vertex
+template<typename T> class vertexp
 {
 public:
-	vector3<T> v;
+	vector3<T> p;
 public:
-	vertex<T>(void) {}
-	vertex<T>(vector3<T> _v) : v(_v) {}
+	vertexp<T>(void) {}
+	vertexp<T>(vector3<T> _p) : p(_p) {}
 };
 
 
-template<typename T> class vertexc
-	: public vertex<T>
+template<typename T> class vertexpc
 {
 public:
+	vector3<T> p;
 	vector4<T> c;
 public:
-	vertexc<T>(void) {}
-	vertexc<T>(vector3<T> _v) : c(0) { v = _v; }
-	vertexc<T>(vector3<T> _v, vector4<T> _c) : c(_c) { v = _v; }
+	vertexpc<T>(void) {}
+	vertexpc<T>(vector3<T> _p) : p(_p), c(0) {}
+	vertexpc<T>(vector3<T> _p, vector4<T> _c) : p(_p), c(_c) {}
 };
 
 
-template<typename T> class vertexn
-	: public vertex<T>
+template<typename T> class vertexpn
 {
 public:
+	vector3<T> p;
 	vector3<T> n;
 public:
-	vertexn<T>(void) {}
-	vertexn<T>(vector3<T> _v) : n(0) { v = _v; }
-	vertexn<T>(vector3<T> _v, vector3<T> _n) : n(_n) { v = _v; }
+	vertexpn<T>(void) {}
+	vertexpn<T>(vector3<T> _p) : p(_p), n(0) {}
+	vertexpn<T>(vector3<T> _p, vector3<T> _n) : p(_p), n(_n) {}
 };
 
 
-template<typename T> class vertexcn
-	: public vertex<T>
+template<typename T> class vertexpcn
 {
 public:
+	vector3<T> p;
 	vector4<T> c;
 	vector3<T> n;
 public:
-	vertexcn<T>(void) {}
-	vertexcn<T>(vector3<T> _v) : v(_v), n(0) {}
-	vertexcn<T>(vector3<T> _v, vector3<T> _n) : c(_c), n(_n) { v = _v; }
+	vertexpcn<T>(void) {}
+	vertexpcn<T>(vector3<T> _p) : p(_p), c(0), n(0) {}
+	vertexpcn<T>(vector3<T> _p, vector3<T> _n) : p(_p), c(_c), n(_n) {}
 };
 
 
-typedef vertex<float> floatv;
-typedef vertexc<float> floatvc;
-typedef vertexn<float> floatvn;
-typedef vertexcn<float> floatvcn;
-typedef vertex<double> doublev;
-typedef vertexc<double> doublevc;
-typedef vertexn<double> doublevn;
-typedef vertexcn<double> doublevcn;
+template<typename T> class vertexpnt
+{
+public:
+	vector3<T> p;
+	vector3<T> n;
+	vector2<T> t;
+public:
+	vertexpnt<T>(void) {}
+	vertexpnt<T>(vector3<T> _p) : p(_p), n(T(0)), t(T(0)) {}
+	vertexpnt<T>(vector3<T> _p, vector3<T> _n, vector2<T> _t) : p(_p), n(_n), t(_t) {}
+};
+
+
+typedef vertexp<float> floatvp;
+typedef vertexpc<float> floatvpc;
+typedef vertexpn<float> floatvpn;
+typedef vertexpcn<float> floatvpcn;
+typedef vertexpnt<float> floatvpnt;
+typedef vertexp<double> doublevp;
+typedef vertexpc<double> doublevpc;
+typedef vertexpn<double> doublevpn;
+typedef vertexpcn<double> doublevpcn;
+typedef vertexpnt<double> doublevpnt;

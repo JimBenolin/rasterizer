@@ -289,7 +289,7 @@ void CScreen::rasterize(const floattc& tc)
 	if (false && doubleArea <= 0)
 	{
 		//  triangle is back-facing or zero-area
-		float3 v[3] = { tc.vc0.v, tc.vc1.v, tc.vc2.v };
+		float3 v[3] = { tc.v0.p, tc.v1.p, tc.v2.p };
 		setColor(ubyte4(0, 255, 0, 0));
 		drawLine(uint16_t(v[0].x), uint16_t(v[0].y), uint16_t(v[1].x), uint16_t(v[1].y));
 		drawLine(uint16_t(v[1].x), uint16_t(v[1].y), uint16_t(v[2].x), uint16_t(v[2].y));
@@ -308,7 +308,7 @@ void CScreen::rasterize(const floattc& tc)
 	float3 barycentric;
 	uint2 p;
 
-	floatbb2d bb(tc.vc0.v.xy(), tc.vc1.v.xy(), tc.vc2.v.xy());
+	floatbb2d bb(tc.v0.p.xy(), tc.v1.p.xy(), tc.v2.p.xy());
 	bb.clamp(0, 0, float(mWidth), float(mHeight));
 
 	for (int s = 0; s < mSamples; s++)
@@ -346,7 +346,7 @@ void CScreen::rasterize(const floattc& tc)
 					continue;
 				barycentric.v = 1 - barycentric.u - barycentric.w;
 
-				float z = float3(tc.vc0.v.z, tc.vc1.v.z, tc.vc2.v.z).dot(barycentric);
+				float z = float3(tc.v0.p.z, tc.v1.p.z, tc.v2.p.z).dot(barycentric);
 				if (z < -1 || z > 1)
 					continue;
 				jmath::clamp<float>(z, -1, 1);
@@ -368,7 +368,7 @@ void CScreen::rasterize(const floattc& tc)
 
 void CScreen::shade(const floattc& triangle, const uint2& pixel, const float3& barycentric, const int sample)
 {
-	setColor(barycentric.u * triangle.vc0.c + barycentric.v * triangle.vc1.c + barycentric.w * triangle.vc2.c);
+	setColor(barycentric.u * triangle.v0.c + barycentric.v * triangle.v1.c + barycentric.w * triangle.v2.c);
 
 	if (mSamples > 1)
 		mpRenderBuffer->set(pixel.x, pixel.y, sample, mColor);
@@ -379,7 +379,7 @@ void CScreen::shade(const floattc& triangle, const uint2& pixel, const float3& b
 
 void CScreen::shadeWireframe(const floattc& triangle)
 {
-	float3 v[3] = { triangle.vc0.v, triangle.vc1.v, triangle.vc2.v };
+	float3 v[3] = { triangle.v0.p, triangle.v1.p, triangle.v2.p };
 	if (v[0].x < 0 || v[0].x >= mWidth)
 		return;
 	if (v[1].x < 0 || v[1].x >= mWidth)
