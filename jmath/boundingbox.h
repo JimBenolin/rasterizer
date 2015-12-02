@@ -23,8 +23,8 @@ public:
 	inline T left(void) const { return min; }
 	inline T right(void) const { return max; }
 
-	boundingbox1d<T> operator+(const boundingbox1d& box) const { return boundingbox1d(std::min(min, box.min), std::max(max, box.max)); }
-	boundingbox1d<T> operator/(const boundingbox1d& box) const { if (!this->overlaps(box)) return boundingbox1d(T(0), T(0)); return boundingbox1d(std::max(min, box.min), std::min(max, box.max)); }
+	boundingbox1d<T> operator+(const boundingbox1d<T>& box) const { return boundingbox1d<T>(std::min(min, box.min), std::max(max, box.max)); }
+	boundingbox1d<T> operator/(const boundingbox1d<T>& box) const { if (!this->overlaps(box)) return boundingbox1d<T>(T(0), T(0)); return boundingbox1d<T>(std::max(min, box.min), std::min(max, box.max)); }
 	boundingbox1d<T>& operator+=(const boundingbox1d<T>& box) { return *this = *this + box; }
 	boundingbox1d<T>& operator/=(const boundingbox1d<T>& box) { return *this = *this / box; }
 
@@ -36,11 +36,26 @@ public:
 		max = jmath::clamp<T>(max, xMin, xMax);
 	}
 
-	bool overlaps(const boundingbox1d& box) const
+	inline void offset(const T offset)
+	{
+		min += offset;
+		max += offset;
+	}
+
+	bool overlaps(const boundingbox1d<T>& box) const
 	{
 		if (min >= box.max)
 			return false;
 		if (max <= box.min)
+			return false;
+		return true;
+	}
+
+	bool inside(const boundingbox1d<T>& box) const
+	{
+		if (min < box.min)
+			return false;
+		if (max > box.max)
 			return false;
 		return true;
 	}
@@ -90,8 +105,8 @@ public:
 	inline T top(void) const { return max.y; }
 	inline T bottom(void) const { return min.y; }
 
-	boundingbox2d<T> operator+(const boundingbox2d& box) const { return boundingbox2d(std::min(min.x, box.min.x), std::min(min.y, box.min.y), std::max(max.x, box.max.x), std::max(max.y, box.max.y)); }
-	boundingbox2d<T> operator/(const boundingbox2d& box) const { if (!this->overlaps(box)) return boundingbox2d<T>(T(0), T(0), T(0), T(0)); return boundingbox2d<T>(std::max(min.x, box.min.x), std::max(min.y, box.min.y), std::min(max.x, box.max.x), std::min(max.y, box.max.y)); }
+	boundingbox2d<T> operator+(const boundingbox2d<T>& box) const { return boundingbox2d<T>(std::min(min.x, box.min.x), std::min(min.y, box.min.y), std::max(max.x, box.max.x), std::max(max.y, box.max.y)); }
+	boundingbox2d<T> operator/(const boundingbox2d<T>& box) const { if (!this->overlaps(box)) return boundingbox2d<T>(T(0), T(0), T(0), T(0)); return boundingbox2d<T>(std::max(min.x, box.min.x), std::max(min.y, box.min.y), std::min(max.x, box.max.x), std::min(max.y, box.max.y)); }
 	boundingbox2d<T>& operator+=(const boundingbox2d<T>& box) { return *this = *this + box; }
 	boundingbox2d<T>& operator/=(const boundingbox2d<T>& box) { return *this = *this / box; }
 
@@ -105,7 +120,15 @@ public:
 		max.y = jmath::clamp<T>(max.y, yMin, yMax);
 	}
 
-	bool overlaps(const boundingbox2d& box) const
+	inline void offset(const T xOffset, const T yOffset)
+	{
+		min.x += xOffset;
+		max.x += xOffset;
+		min.y += yOffset;
+		max.y += yOffset;
+	}
+
+	bool overlaps(const boundingbox2d<T>& box) const
 	{
 		if (min.x >= box.max.x)
 			return false;
@@ -114,6 +137,19 @@ public:
 		if (min.y >= box.max.y)
 			return false;
 		if (max.y <= box.min.y)
+			return false;
+		return true;
+	}
+
+	bool inside(const boundingbox2d<T>& box) const
+	{
+		if (min.x < box.min.x)
+			return false;
+		if (max.x > box.max.x)
+			return false;
+		if (min.y < box.min.y)
+			return false;
+		if (max.y > box.max.y)
 			return false;
 		return true;
 	}
@@ -158,8 +194,8 @@ public:
 	inline T near(void) const { return max.z; }
 	inline T far(void) const { return min.z; }
 
-	boundingbox3d<T> operator+(const boundingbox3d& box) const { return boundingbox3d(std::min(min.x, box.min.x), std::min(min.y, box.min.y), std::min(min.z, box.min.z), std::max(max.x, box.max.x), std::max(max.y, box.max.y), std::max(max.z, box.max.z)); }
-	boundingbox3d<T> operator/(const boundingbox3d& box) const { if (!this->overlaps(box)) return boundingbox3d<T>(T(0), T(0), T(0), T(0), T(0), T(0)); return boundingbox3d<T>(std::max(min.x, box.min.x), std::max(min.y, box.min.y), std::max(min.z, box.min.z), std::min(max.x, box.max.x), std::min(max.y, box.max.y), std::min(max.z, box.max.z)); }
+	boundingbox3d<T> operator+(const boundingbox3d<T>& box) const { return boundingbox3d<T>(std::min(min.x, box.min.x), std::min(min.y, box.min.y), std::min(min.z, box.min.z), std::max(max.x, box.max.x), std::max(max.y, box.max.y), std::max(max.z, box.max.z)); }
+	boundingbox3d<T> operator/(const boundingbox3d<T>& box) const { if (!this->overlaps(box)) return boundingbox3d<T>(T(0), T(0), T(0), T(0), T(0), T(0)); return boundingbox3d<T>(std::max(min.x, box.min.x), std::max(min.y, box.min.y), std::max(min.z, box.min.z), std::min(max.x, box.max.x), std::min(max.y, box.max.y), std::min(max.z, box.max.z)); }
 	boundingbox3d<T>& operator+=(const boundingbox3d<T>& box) { return *this = *this + box; }
 	boundingbox3d<T>& operator/=(const boundingbox3d<T>& box) { return *this = *this / box; }
 
@@ -175,7 +211,17 @@ public:
 		max.z = jmath::clamp<T>(max.y, zMin, zMax);
 	}
 
-	bool overlaps(const boundingbox3d& box) const
+	inline void offset(const T xOffset, const T yOffset, const T zOffset)
+	{
+		min.x += xOffset;
+		max.x += xOffset;
+		min.y += yOffset;
+		max.y += yOffset;
+		min.z += zOffset;
+		max.z += zOffset;
+	}
+
+	bool overlaps(const boundingbox3d<T>& box) const
 	{
 		if (min.x >= box.max.x)
 			return false;
@@ -188,6 +234,23 @@ public:
 		if (min.z >= box.max.z)
 			return false;
 		if (max.z <= box.min.z)
+			return false;
+		return true;
+	}
+
+	bool inside(const boundingbox3d<T>& box) const
+	{
+		if (min.x < box.min.x)
+			return false;
+		if (max.x > box.max.x)
+			return false;
+		if (min.y < box.min.y)
+			return false;
+		if (max.y > box.max.y)
+			return false;
+		if (min.z < box.min.z)
+			return false;
+		if (max.z > box.max.z)
 			return false;
 		return true;
 	}

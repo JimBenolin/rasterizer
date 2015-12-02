@@ -308,15 +308,15 @@ void CScreen::rasterize(const floattc& tc)
 	float3 barycentric;
 	uint2 p;
 
+	floatbb2d bb(tc.vc0.v.xy(), tc.vc1.v.xy(), tc.vc2.v.xy());
+	bb.clamp(0, 0, float(mWidth), float(mHeight));
+
 	for (int s = 0; s < mSamples; s++)
 	{
 
 		float ev0 = e0.dot(float3(mSamplePositions[s].x, mSamplePositions[s].y, 1));
 		float ev1 = e1.dot(float3(mSamplePositions[s].x, mSamplePositions[s].y, 1));
 		float ev2 = e2.dot(float3(mSamplePositions[s].x, mSamplePositions[s].y, 1));
-
-		floatbb2d bb(tc.vc0.v.xy(), tc.vc1.v.xy(), tc.vc2.v.xy());
-		bb.clamp(0, 0, float(mWidth), float(mHeight));
 
 		for (p.y = unsigned(bb.min.y); p.y < unsigned(bb.max.y) + 1; p.y++)
 		{

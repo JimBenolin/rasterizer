@@ -130,6 +130,7 @@
     <ClCompile Include="DepthBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
+    <ClCompile Include="RaterizerTile.cpp" />
     <ClCompile Include="RenderBuffer.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="DepthBuffer.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Rasterizer.h" />
+    <ClInclude Include="RaterizerTile.h" />
     <ClInclude Include="RenderBuffer.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="stb_image.h" />
