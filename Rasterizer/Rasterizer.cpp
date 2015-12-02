@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 	CloseHandle(hThread);
 
 
-	CScreen screen("Test", windowWidth, windowHeight, 1);
+	CScreen screen("Test", windowWidth, windowHeight, 16);
 //	CScreen screen("Test");
 
 	int width = screen.getWidth();
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 	float4x4 screenTranslationT = float4x4::translation(float(width) / 2, float(height) / 2, 0);
 	float4x4 screenTransformT = screenTranslationT * screenScaleT;
 
-	screen.setClearColor(ubyte4(230, 230, 255, 255));
+	screen.setClearColor(ubyte4(200, 200, 255, 255));
 	screen.clear();
 
 	float4x4 modelT, viewT, projectionT;

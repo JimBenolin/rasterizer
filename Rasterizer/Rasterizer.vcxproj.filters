@@ -1,90 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Dependencies">
       <UniqueIdentifier>{106df646-e69f-4ff2-bb0f-1bfe32898d33}</UniqueIdentifier>
     </Filter>
     <Filter Include="jmath">
       <UniqueIdentifier>{f172ba53-eb34-4d98-a812-5182b6c0a907}</UniqueIdentifier>
     </Filter>
-    <Filter Include="stb">
+    <Filter Include="Model">
+      <UniqueIdentifier>{05c11604-b62f-4d0b-8847-8e55b829a367}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{f6cb9e9c-1e40-4f0f-8e0d-73c074f742da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{95ccac4c-ef1c-4999-9f76-bca4df167ef0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\stb">
       <UniqueIdentifier>{76e3561e-1352-476e-9792-953edf828831}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Rasterizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Screen.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Model.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="DepthBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="RenderBuffer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureSampler.cpp" />
     <ClCompile Include="Timer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureSampler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="Rasterizer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Screen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="triangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rasterizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureSampler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_image_write.h">
-      <Filter>Dependencies</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>Dependencies</Filter>
-    </ClInclude>
-    <ClInclude Include="vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\jmath\boundingbox.h">
       <Filter>jmath</Filter>
     </ClInclude>
@@ -110,10 +64,33 @@
       <Filter>jmath</Filter>
     </ClInclude>
     <ClInclude Include="..\stb\stb_image.h">
-      <Filter>stb</Filter>
+      <Filter>Dependencies\stb</Filter>
     </ClInclude>
     <ClInclude Include="..\stb\stb_image_write.h">
-      <Filter>stb</Filter>
+      <Filter>Dependencies\stb</Filter>
     </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="color.h" />
+    <ClInclude Include="Screen.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureSampler.h" />
+    <ClInclude Include="Timer.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterizer.h" />
   </ItemGroup>
 </Project>
