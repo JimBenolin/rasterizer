@@ -37,6 +37,19 @@
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="Rasterizer.cpp" />
+    <ClCompile Include="Node.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Group.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Filename.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\jmath\boundingbox.h">
@@ -92,5 +105,21 @@
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="Rasterizer.h" />
+    <ClInclude Include="Node.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Group.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="tiny_obj_loader.h">
+      <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Filename.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

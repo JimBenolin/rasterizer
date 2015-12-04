@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include "Texture.h"
 
+#include "Filename.h"
 
 int windowWidth = 500;
 int windowHeight = 500;
@@ -36,6 +37,8 @@ DWORD WINAPI MyThreadProc(LPVOID pParam)
 int main(int argc, char* argv[])
 {
 	CTexture texture("../textures/uvmap.png");
+
+	CFilename name("../models/LegoMan.obj");
 
 	HANDLE hThread;
 	DWORD threadId;
@@ -65,6 +68,9 @@ int main(int argc, char* argv[])
 	Movement movement = { 0, 0, 0, 0, 0, 0, float(M_PI / 2) };
 
 	CModel model;
+
+	model.loadOBJ("../models/LegoMan.obj");
+
 	model.addAxes();
 	model.addCubeRGB(float3(0, 0, 0), float3(1, 1, 1));
 	model.addCubeRGB(float3(0.7f, 0.7f, 0.7f), float3(0.4f, 0.4f, 0.4f));

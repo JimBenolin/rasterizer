@@ -128,13 +128,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DepthBuffer.cpp" />
+    <ClCompile Include="Filename.cpp" />
+    <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="Group.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="RenderBuffer.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureSampler.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\jmath\boundingbox.h" />
@@ -149,13 +154,19 @@
     <ClInclude Include="..\stb\stb_image_write.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="DepthBuffer.h" />
+    <ClInclude Include="Filename.h" />
+    <ClInclude Include="Geometry.h" />
+    <ClInclude Include="Group.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="RenderBuffer.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureSampler.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vertex.h" />
   </ItemGroup>
